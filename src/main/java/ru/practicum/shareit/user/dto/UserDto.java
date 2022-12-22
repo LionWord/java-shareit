@@ -1,16 +1,13 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @Builder(access = AccessLevel.PUBLIC)
-public class User {
+public class UserDto {
     private String name;
     private String email;
-    private int id;
+
 }
