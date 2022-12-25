@@ -10,8 +10,21 @@ public class ErrorHandler {
 
     @ExceptionHandler(InvalidEmailException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionMessage handleInvalidInputException(InvalidEmailException e) {
+    public ExceptionMessage handleInvalidEmailException(InvalidEmailException e) {
         return new ExceptionMessage("400", e.getMessage());
     }
+
+    @ExceptionHandler(NoSuchUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ExceptionMessage handleNoSuchUserException(NoSuchUserException e) {
+        return new ExceptionMessage("404", e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidItemInputException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionMessage handleInvalidItemInputException(InvalidItemInputException e) {
+        return new ExceptionMessage("400", e.getMessage());
+    }
+
 
 }

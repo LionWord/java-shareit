@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dao.ItemDao;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 @Service
@@ -11,23 +12,23 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemDao itemDao;
-    public ItemDto addItem (int userId, ItemDto itemDto) {
+    public Item addItem (int userId, ItemDto itemDto) {
         return itemDao.addItem(userId, itemDto);
     }
 
-    public ItemDto editItem(int userId, int itemId) {
-        return itemDao.editItem(userId, itemId);
+    public Item editItem(int itemId, ItemDto itemDto) {
+        return itemDao.editItem(itemId, itemDto);
     }
 
-    public ItemDto getItem(int itemId) {
+    public Item getItem(int itemId) {
         return itemDao.getItem(itemId);
     }
 
-    public List<ItemDto> getAllMyItems(int userId) {
+    public List<Item> getAllMyItems(int userId) {
         return itemDao.getAllMyItems(userId);
     }
 
-    public List<ItemDto> searchItem(String query) {
+    public List<Item> searchItem(String query) {
         return itemDao.searchItem(query);
     }
 
