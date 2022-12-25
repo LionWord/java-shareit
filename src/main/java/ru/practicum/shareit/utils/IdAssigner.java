@@ -1,8 +1,7 @@
 package ru.practicum.shareit.utils;
 
-import lombok.Getter;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.model.User;
 
 public class IdAssigner {
 
