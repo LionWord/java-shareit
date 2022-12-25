@@ -4,14 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dao.ItemDao;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.utils.IdAssigner;
 
 import java.util.List;
 @Service
 @RequiredArgsConstructor
-public class ItemServiceImpl {
+public class ItemServiceImpl implements ItemService {
 
     private final ItemDao itemDao;
     public ItemDto addItem (int userId, ItemDto itemDto) {

@@ -6,13 +6,14 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.utils.IdAssigner;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 public class ItemDaoImplInMemory implements ItemDao {
 
-    private final Map<Integer, Item> items = Map.of();
+    private final Map<Integer, Item> items = new HashMap<>();
 
     public ItemDto addItem (int userId, ItemDto itemDto) {
         Item item = ItemMapper.makeItemFromDto(userId, itemDto);
@@ -38,10 +39,12 @@ public class ItemDaoImplInMemory implements ItemDao {
         return result;
     }
 
-    public List<ItemDto> searchItem(String query) {
+    public List<ItemDto> searchItem(String request) {
         List<ItemDto> result = List.of();
+        String query = request.toLowerCase();
         items.values().stream()
-                .filter(item -> item.getName().contains(query) | item.getDescription().contains(query))
+                .filter(item -> item.getName().toLowerCase().contains(query)
+                        | item.getDescription().toLowerCase().contains(query))
                 .filter(item -> item.isAvailable())
                 .forEach(item -> result.add(ItemMapper.makeDtoFromItem(item)));
         return result;

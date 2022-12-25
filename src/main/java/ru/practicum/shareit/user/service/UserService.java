@@ -9,7 +9,7 @@ public interface UserService {
 
     User addUser (UserDto userDto);
 
-    User editUser(int userId);
+    User editUser(int userId, UserDto userDto);
 
     void deleteUser(int userId);
 
@@ -19,4 +19,5 @@ public interface UserService {
 
     boolean emailIsPresent(String email);
 
+    boolean idIsPresent(int userId);
 }

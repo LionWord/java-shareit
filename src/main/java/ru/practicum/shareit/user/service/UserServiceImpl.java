@@ -20,8 +20,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User editUser(int userId) {
-        return userDao.editUser(userId);
+    public User editUser(int userId, UserDto userDto) {
+        return userDao.editUser(userId, userDto);
     }
 
     @Override
@@ -42,5 +42,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean emailIsPresent(String email) {
         return userDao.emailIsPresent(email);
+    }
+
+    @Override
+    public boolean idIsPresent(int userId) {
+        return userDao.idIsPresent(userId);
     }
 }

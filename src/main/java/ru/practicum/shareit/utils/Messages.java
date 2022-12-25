@@ -8,4 +8,5 @@ public class Messages {
 
     public static final String EMAIL_ALREADY_EXISTS = "User with this email already exists";
     public static final String INVALID_EMAIL = "Invalid email";
+    public static final String NO_SUCH_USER = "No such user";
 }

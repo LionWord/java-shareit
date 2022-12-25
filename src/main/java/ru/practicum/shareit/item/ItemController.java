@@ -18,7 +18,7 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User_Id") int userId, ItemDto itemDto) {
+    public ItemDto addItem(@RequestHeader("X-Sharer-User_Id") int userId, @RequestBody ItemDto itemDto) {
         return itemService.addItem(userId, itemDto);
     }
     @PatchMapping("/{itemId}")
