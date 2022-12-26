@@ -16,7 +16,7 @@ public class ItemDaoImplInMemory implements ItemDao {
 
     private final Map<Integer, Item> items = new HashMap<>();
 
-    public Item addItem (int userId, ItemDto itemDto) {
+    public Item addItem(int userId, ItemDto itemDto) {
         Item item = ItemMapper.makeItemFromDto(userId, itemDto);
         IdAssigner.assignItemId(item);
         items.put(item.getId(), item);
@@ -49,6 +49,9 @@ public class ItemDaoImplInMemory implements ItemDao {
     }
 
     public List<Item> searchItem(String request) {
+        if (request.isEmpty()) {
+            return List.of();
+        }
         String query = request.toLowerCase();
         return items.values().stream()
                 .filter(item -> item.getName().toLowerCase().contains(query)

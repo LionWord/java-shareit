@@ -6,14 +6,12 @@ import ru.practicum.shareit.exceptions.EmailAlreadyExistsException;
 import ru.practicum.shareit.exceptions.InvalidEmailException;
 import ru.practicum.shareit.exceptions.NoSuchUserException;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.EmailValidator;
 import ru.practicum.shareit.utils.Messages;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * TODO Sprint add-controllers.
@@ -27,7 +25,7 @@ public class UserController {
 
     @PostMapping
     public User createUser(@RequestBody UserDto userDto) {
-        if (!EmailValidator.isValidEmail(userDto)) {
+        if (EmailValidator.isValidEmail(userDto)) {
             throw new InvalidEmailException(Messages.INVALID_EMAIL);
         } else if (userService.emailIsPresent(userDto.getEmail())) {
             throw new EmailAlreadyExistsException(Messages.EMAIL_ALREADY_EXISTS);
@@ -37,7 +35,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public User getUser(@PathVariable int userId) {
-        if (!userService.idIsPresent(userId)) {
+        if (userService.idIsPresent(userId)) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
         return userService.getUser(userId);
@@ -50,12 +48,12 @@ public class UserController {
 
     @PatchMapping("/{userId}")
     public User editUser(@PathVariable int userId, @RequestBody UserDto userDto) {
-        if (!userService.idIsPresent(userId)) {
+        if (userService.idIsPresent(userId)) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
         User oldUser = userService.getUser(userId);
         if (!oldUser.getEmail().equals(userDto.getEmail()) & userDto.getEmail() != null) {
-            if (!EmailValidator.isValidEmail(userDto)) {
+            if (EmailValidator.isValidEmail(userDto)) {
                 throw new InvalidEmailException(Messages.INVALID_EMAIL);
             }
             if (userService.emailIsPresent(userDto.getEmail())) {
@@ -68,7 +66,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable int userId) {
-        if (!userService.idIsPresent(userId)) {
+        if (userService.idIsPresent(userId)) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
         userService.deleteUser(userId);

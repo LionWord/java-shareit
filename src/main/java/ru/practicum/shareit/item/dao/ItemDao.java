@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ItemDao {
 
-    Item addItem (int userId, ItemDto itemDto);
+    Item addItem(int userId, ItemDto itemDto);
 
     Item editItem(int itemId, ItemDto itemDto);
 

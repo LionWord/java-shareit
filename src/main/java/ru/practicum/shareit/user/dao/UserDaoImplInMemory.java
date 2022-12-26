@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.dao;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -16,9 +15,9 @@ import java.util.stream.Collectors;
 @Repository
 public class UserDaoImplInMemory implements UserDao {
 
-    Map<Integer, User> users = new HashMap<>();
+    final Map<Integer, User> users = new HashMap<>();
 
-    public User addUser (UserDto userDto) {
+    public User addUser(UserDto userDto) {
         User user = UserMapper.makeUserFromDto(0, userDto);
         IdAssigner.assignUserId(user);
         users.put(user.getId(), user);
