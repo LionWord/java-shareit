@@ -52,7 +52,7 @@ public class UserController {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
         User oldUser = userService.getUser(userId);
-        if (!oldUser.getEmail().equals(userDto.getEmail()) & userDto.getEmail() != null) {
+        if (!oldUser.getEmail().equals(userDto.getEmail()) && userDto.getEmail() != null) {
             if (EmailValidator.isValidEmail(userDto)) {
                 throw new InvalidEmailException(Messages.INVALID_EMAIL);
             }

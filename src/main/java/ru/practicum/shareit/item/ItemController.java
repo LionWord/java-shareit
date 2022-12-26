@@ -27,7 +27,7 @@ public class ItemController {
 
     @PostMapping
     public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody ItemDto itemDto) {
-        if (!ItemValidator.isValidItem(itemDto) | itemDto.getAvailable() == null) {
+        if (!ItemValidator.isValidItem(itemDto) || itemDto.getAvailable() == null) {
             throw new InvalidItemInputException(Messages.INVALID_ITEM_INPUT);
         } else if (userService.idIsPresent(userId)) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
