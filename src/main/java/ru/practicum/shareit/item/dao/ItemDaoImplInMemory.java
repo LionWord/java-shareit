@@ -1,13 +1,10 @@
 package ru.practicum.shareit.item.dao;
 
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.exceptions.InvalidItemInputException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.utils.IdAssigner;
-import ru.practicum.shareit.utils.ItemValidator;
-import ru.practicum.shareit.utils.Messages;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,13 +24,17 @@ public class ItemDaoImplInMemory implements ItemDao {
     }
 
     public Item editItem(int itemId, ItemDto itemDto) {
-        if (!ItemValidator.isValidItem(itemDto)) {
-            throw new InvalidItemInputException(Messages.INVALID_ITEM_INPUT);
+        Item item = items.get(itemId);
+        if (itemDto.getName() != null) {
+            item.setName(itemDto.getName());
         }
-        int ownerId = items.get(itemId).getOwnerId();
-        Item item = ItemMapper.makeItemFromDto(ownerId, itemDto);
-        item.setId();
-        items.put(itemId, ItemMapper.makeItemFromDto(ownerId, itemDto));
+        if (itemDto.getDescription() != null) {
+            item.setDescription(itemDto.getDescription());
+        }
+        if (itemDto.getAvailable() != null) {
+            item.setAvailable(itemDto.getAvailable());
+        }
+        items.put(itemId, item);
         return getItem(itemId);
     }
 
@@ -48,12 +49,11 @@ public class ItemDaoImplInMemory implements ItemDao {
     }
 
     public List<Item> searchItem(String request) {
-        List<ItemDto> result = List.of();
         String query = request.toLowerCase();
         return items.values().stream()
                 .filter(item -> item.getName().toLowerCase().contains(query)
                         | item.getDescription().toLowerCase().contains(query))
-                .filter(item -> item.isAvailable())
+                .filter(Item::getAvailable)
                 .collect(Collectors.toList());
 
     }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.InvalidItemInputException;
 import ru.practicum.shareit.exceptions.NoSuchUserException;
+import ru.practicum.shareit.exceptions.WrongUserIdException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -26,7 +27,7 @@ public class ItemController {
 
     @PostMapping
     public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody ItemDto itemDto) {
-        if (!ItemValidator.isValidItem(itemDto) | !itemDto.isAvailable()) {
+        if (!ItemValidator.isValidItem(itemDto) | itemDto.getAvailable() == null) {
             throw new InvalidItemInputException(Messages.INVALID_ITEM_INPUT);
         } else if (!userService.idIsPresent(userId)) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
@@ -40,6 +41,10 @@ public class ItemController {
         if (!userService.idIsPresent(userId)) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
+        if (userId != itemService.getItem(itemId).getOwnerId()) {
+            throw new WrongUserIdException(Messages.WRONG_USER);
+        }
+
         return itemService.editItem(itemId, item);
     }
     @GetMapping("/{itemId}")

@@ -18,14 +18,14 @@ public class ItemMapper {
         return ItemDto.builder()
                 .name(item.getName())
                 .description(item.getDescription())
-                .isAvailable(item.isAvailable())
+                .available(item.getAvailable())
                 .build();
     }
     public static Item makeItemFromDto(int userId, ItemDto item) {
         return Item.builder()
                 .name(item.getName())
                 .description(item.getDescription())
-                .isAvailable(item.isAvailable())
+                .available(item.getAvailable())
                 .ownerId(userId)
                 .build();
     }

@@ -12,6 +12,6 @@ import lombok.Data;
 public class ItemDto {
     private String name;
     private String description;
-    private boolean isAvailable;
+    private Boolean available;
 
 }

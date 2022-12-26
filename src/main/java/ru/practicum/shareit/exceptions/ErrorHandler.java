@@ -14,9 +14,9 @@ public class ErrorHandler {
         return new ExceptionMessage("400", e.getMessage());
     }
 
-    @ExceptionHandler(NoSuchUserException.class)
+    @ExceptionHandler({NoSuchUserException.class, WrongUserIdException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionMessage handleNoSuchUserException(NoSuchUserException e) {
+    public ExceptionMessage handleNoSuchUserAndWrongUserException(NoSuchUserException e) {
         return new ExceptionMessage("404", e.getMessage());
     }
 
