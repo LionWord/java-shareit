@@ -46,6 +46,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean idIsPresent(int userId) {
-        return userDao.idIsPresent(userId);
+        return !userDao.idIsPresent(userId);
     }
 }

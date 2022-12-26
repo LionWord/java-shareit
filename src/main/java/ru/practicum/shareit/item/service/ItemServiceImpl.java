@@ -7,12 +7,14 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
     private final ItemDao itemDao;
-    public Item addItem (int userId, ItemDto itemDto) {
+
+    public Item addItem(int userId, ItemDto itemDto) {
         return itemDao.addItem(userId, itemDto);
     }
 

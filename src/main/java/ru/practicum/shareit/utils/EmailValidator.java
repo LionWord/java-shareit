@@ -15,11 +15,6 @@ public class EmailValidator {
     public static boolean isValidEmail(UserDto userDto) {
         String regex = ".+@.+\\..+";
         Optional<String> email = Optional.ofNullable(userDto.getEmail());
-        if (email.isPresent() & !email.isEmpty()) {
-            if (email.get().matches(regex)) {
-                return true;
-            }
-        }
-        return false;
+        return email.map(s -> !s.matches(regex)).orElse(true);
     }
 }

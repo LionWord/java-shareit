@@ -29,16 +29,17 @@ public class ItemController {
     public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody ItemDto itemDto) {
         if (!ItemValidator.isValidItem(itemDto) | itemDto.getAvailable() == null) {
             throw new InvalidItemInputException(Messages.INVALID_ITEM_INPUT);
-        } else if (!userService.idIsPresent(userId)) {
+        } else if (userService.idIsPresent(userId)) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
         return itemService.addItem(userId, itemDto);
     }
+
     @PatchMapping("/{itemId}")
     public Item editItem(@RequestHeader("X-Sharer-User-Id") int userId,
                          @PathVariable int itemId,
                          @RequestBody ItemDto item) {
-        if (!userService.idIsPresent(userId)) {
+        if (userService.idIsPresent(userId)) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
         if (userId != itemService.getItem(itemId).getOwnerId()) {
@@ -47,14 +48,17 @@ public class ItemController {
 
         return itemService.editItem(itemId, item);
     }
+
     @GetMapping("/{itemId}")
     public Item getItem(@PathVariable int itemId) {
         return itemService.getItem(itemId);
     }
+
     @GetMapping
     public List<Item> getAllMyItems(@RequestHeader("X-Sharer-User-Id") int userId) {
         return itemService.getAllMyItems(userId);
     }
+
     @GetMapping("/search")
     public List<Item> searchItem(@RequestParam(name = "text") String query) {
         return itemService.searchItem(query);

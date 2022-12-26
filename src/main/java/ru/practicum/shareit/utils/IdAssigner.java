@@ -12,14 +12,9 @@ public class IdAssigner {
         user.setId(userId);
         userId++;
     }
+
     public static void assignItemId(Item item) {
         item.setId(itemId);
-        userId++;
-    }
-    public static int getUserIdValue() {
-        return userId;
-    }
-    public static int getItemId() {
-        return itemId;
+        itemId++;
     }
 }
