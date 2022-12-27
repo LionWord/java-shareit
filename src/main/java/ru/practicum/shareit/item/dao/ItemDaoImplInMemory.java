@@ -17,7 +17,7 @@ public class ItemDaoImplInMemory implements ItemDao {
     private final Map<Integer, Item> items = new HashMap<>();
 
     public Item addItem(int userId, ItemDto itemDto) {
-        Item item = ItemMapper.makeItemFromDto(userId, itemDto);
+        Item item = ItemMapper.itemToDto(userId, itemDto);
         IdAssigner.assignItemId(item);
         items.put(item.getId(), item);
         return item;

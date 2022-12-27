@@ -5,7 +5,7 @@ import ru.practicum.shareit.user.model.User;
 
 public class UserMapper {
 
-    public static User makeUserFromDto(int userId, UserDto userDto) {
+    public static User userFromDto(int userId, UserDto userDto) {
         return User.builder()
                 .name(userDto.getName())
                 .email(userDto.getEmail())

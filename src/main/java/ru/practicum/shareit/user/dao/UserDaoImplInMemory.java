@@ -18,7 +18,7 @@ public class UserDaoImplInMemory implements UserDao {
     final Map<Integer, User> users = new HashMap<>();
 
     public User addUser(UserDto userDto) {
-        User user = UserMapper.makeUserFromDto(0, userDto);
+        User user = UserMapper.userFromDto(0, userDto);
         IdAssigner.assignUserId(user);
         users.put(user.getId(), user);
         return user;
