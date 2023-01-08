@@ -1,21 +1,19 @@
-package ru.practicum.shareit.item.dto;
+package ru.practicum.shareit.user.dto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
-/**
- * TODO Sprint add-controllers.
- */
+import javax.validation.constraints.Email;
+
 @Data
 @Builder(access = AccessLevel.PUBLIC)
-public class ItemDto {
+public class UserDto {
     @Nullable
     private String name;
+    @Email
     @Nullable
-    private String description;
-    @Nullable
-    private Boolean available;
+    private String email;
 
 }

@@ -1,9 +1,11 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.user.model;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -11,16 +13,13 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @Builder(access = AccessLevel.PUBLIC)
-public class Item {
+public class User {
     @NotNull
+    @NotEmpty
     private String name;
+    @Email
     @NotNull
-    private String description;
+    private String email;
     @NotNull
     private int id;
-    @NotNull
-    private int ownerId;
-    @NotNull
-    private Boolean available;
-
 }
