@@ -13,6 +13,7 @@ import ru.practicum.shareit.utils.ItemValidator;
 import ru.practicum.shareit.utils.Messages;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * TODO Sprint add-controllers.
@@ -23,34 +24,21 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
-    private final UserService userService;
 
     @PostMapping
-    public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody ItemDto itemDto) {
-        if (!ItemValidator.isValidItem(itemDto) || itemDto.getAvailable() == null) {
-            throw new InvalidItemInputException(Messages.INVALID_ITEM_INPUT);
-        } else if (userService.idIsPresent(userId)) {
-            throw new NoSuchUserException(Messages.NO_SUCH_USER);
-        }
-        return itemService.addItem(userId, itemDto);
+    public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody Item item) {
+        return itemService.saveItem(userId, item);
     }
 
     @PatchMapping("/{itemId}")
     public Item editItem(@RequestHeader("X-Sharer-User-Id") int userId,
                          @PathVariable int itemId,
                          @RequestBody ItemDto item) {
-        if (userService.idIsPresent(userId)) {
-            throw new NoSuchUserException(Messages.NO_SUCH_USER);
-        }
-        if (userId != itemService.getItem(itemId).getOwnerId()) {
-            throw new WrongUserIdException(Messages.WRONG_USER);
-        }
-
         return itemService.editItem(itemId, item);
     }
 
     @GetMapping("/{itemId}")
-    public Item getItem(@PathVariable int itemId) {
+    public Optional<Item> getItem(@PathVariable int itemId) {
         return itemService.getItem(itemId);
     }
 

@@ -10,10 +10,8 @@ import javax.validation.constraints.Email;
 @Data
 @Builder(access = AccessLevel.PUBLIC)
 public class UserDto {
-    @Nullable
     private String name;
     @Email
-    @Nullable
     private String email;
 
 }

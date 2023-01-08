@@ -11,11 +11,11 @@ import org.springframework.lang.Nullable;
 @Data
 @Builder(access = AccessLevel.PUBLIC)
 public class ItemDto {
-    @Nullable
+
     private String name;
-    @Nullable
+
     private String description;
-    @Nullable
+
     private Boolean available;
 
 }

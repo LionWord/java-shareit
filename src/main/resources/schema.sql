@@ -1,16 +1,13 @@
 create table if not exists users
 (
-    user_id    integer not null
-        constraint "USERS_pkey"
-            primary key,
+    user_id    serial primary key,
     user_name  varchar not null,
     user_email varchar not null
 );
 
 create table if not exists items
 (
-    item_id           integer not null
-        primary key,
+    item_id           serial primary key,
     item_name         varchar not null,
     item_description  varchar,
     item_is_available boolean,
@@ -22,8 +19,7 @@ create table if not exists items
 
 create table if not exists bookings
 (
-    booking_id integer   not null
-        primary key,
+    booking_id serial primary key,
     start_date timestamp not null,
     end_date   timestamp not null,
     item_id    integer   not null
@@ -37,18 +33,16 @@ create table if not exists bookings
 
 create table if not exists requests
 (
-    request_id          integer not null
-        primary key,
+    request_id          serial primary key,
     request_description varchar,
-    requestor_id        integer not null
-        constraint requestor
+    requester_id        integer not null
+        constraint requester
             references users
 );
 
 create table if not exists comments
 (
-    comment_id   integer not null
-        primary key,
+    comment_id   serial primary key,
     comment_text varchar not null,
     item_id      integer not null
         constraint item

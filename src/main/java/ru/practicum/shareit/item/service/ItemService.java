@@ -4,13 +4,14 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ItemService {
-    Item addItem(int userId, ItemDto itemDto);
+    Item saveItem(int userId, Item item);
 
-    Item editItem(int itemId, ItemDto itemDto);
+    Item editItem(int itemId, ItemDto item);
 
-    Item getItem(int itemId);
+    Optional<Item> getItem(int itemId);
 
     List<Item> getAllMyItems(int userId);
 

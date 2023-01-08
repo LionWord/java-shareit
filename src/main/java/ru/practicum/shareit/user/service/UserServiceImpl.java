@@ -2,50 +2,45 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.dao.UserDao;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
     @Override
-    public User addUser(UserDto userDto) {
-        return userDao.addUser(userDto);
-    }
-
-    @Override
-    public User editUser(int userId, UserDto userDto) {
-        return userDao.editUser(userId, userDto);
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
     public void deleteUser(int userId) {
-        userDao.deleteUser(userId);
+        userRepository.deleteById(userId);
     }
 
     @Override
-    public User getUser(int userId) {
-        return userDao.getUser(userId);
+    public User modifyUser(int userId, UserDto user) {
+        User myUser = getUser(userId).get();
+        userRepository.updateUser(user, myUser);
+        return saveUser(myUser);
+
+    }
+
+    @Override
+    public Optional<User> getUser(int userId) {
+        return userRepository.findById(userId);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return userDao.getAllUsers();
+        return userRepository.findAll();
     }
 
-    @Override
-    public boolean emailIsPresent(String email) {
-        return userDao.emailIsPresent(email);
-    }
-
-    @Override
-    public boolean idIsPresent(int userId) {
-        return !userDao.idIsPresent(userId);
-    }
 }
