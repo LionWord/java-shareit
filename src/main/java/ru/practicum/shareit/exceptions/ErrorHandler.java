@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 @RestControllerAdvice
 public class ErrorHandler {
 
@@ -29,6 +31,12 @@ public class ErrorHandler {
     @ExceptionHandler(InvalidItemInputException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionMessage handleInvalidItemInputException(InvalidItemInputException e) {
+        return new ExceptionMessage("400", e.getMessage());
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ExceptionMessage handleConstraintViolationException(ConstraintViolationException e) {
         return new ExceptionMessage("400", e.getMessage());
     }
 

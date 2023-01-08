@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface UserService {
 
-    User saveUser(User user);
+    User saveUser(UserDto user);
 
     User modifyUser(int userId, UserDto user);
 

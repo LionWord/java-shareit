@@ -12,4 +12,11 @@ public interface UserMapperDpa {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateUser(UserDto userDto, @MappingTarget User entity);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    User userFromDto(UserDto user);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    UserDto dtoFromUser(User user);
+
 }

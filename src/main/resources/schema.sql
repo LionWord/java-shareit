@@ -2,7 +2,7 @@ create table if not exists users
 (
     user_id    serial primary key,
     user_name  varchar not null,
-    user_email varchar not null
+    user_email varchar not null unique
 );
 
 create table if not exists items
