@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ItemService {
-    Item saveItem(int userId, Item item);
+    Item saveItem(int userId, ItemDto item);
 
     Item editItem(int itemId, ItemDto item);
 

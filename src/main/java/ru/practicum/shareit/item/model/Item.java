@@ -4,10 +4,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -17,6 +19,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Entity
 @Table(name = "items")
+@DynamicUpdate
 public class Item {
 
     @Id
@@ -24,7 +27,7 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull
+    @NotBlank
     @Column(name = "item_name")
     private String name;
 
