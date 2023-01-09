@@ -1,6 +1,7 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.model;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import java.sql.Timestamp;
 @Data
 @Entity
 @Table(name = "bookings")
+@DynamicUpdate
 public class Booking {
     @Id
     @Column(name = "booking_id")
@@ -32,5 +34,7 @@ public class Booking {
 
     @NotNull
     @Enumerated
-    private Status status;
+    private Status status = Status.WAITING;
+    @NotNull
+    private String itemName;
 }
