@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.lang.Nullable;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
 @Builder(access = AccessLevel.PUBLIC)
 public class ItemDto {

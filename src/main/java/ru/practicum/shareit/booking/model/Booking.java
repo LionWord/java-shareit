@@ -1,7 +1,9 @@
 package ru.practicum.shareit.booking.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
+import ru.practicum.shareit.item.model.Item;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,15 +16,16 @@ import java.sql.Timestamp;
 public class Booking {
     @Id
     @Column(name = "booking_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotNull
     @Column(name = "start_date")
-    private Timestamp startDate;
+    private Timestamp start;
 
     @NotNull
     @Column(name = "end_date")
-    private Timestamp endDate;
+    private Timestamp end;
 
     @NotNull
     @Column(name = "item_id")
@@ -34,7 +37,7 @@ public class Booking {
 
     @NotNull
     @Enumerated
+    @Column(name = "status")
     private Status status = Status.WAITING;
-    @NotNull
-    private String itemName;
+
 }
