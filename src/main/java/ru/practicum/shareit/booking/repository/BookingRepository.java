@@ -6,5 +6,5 @@ import ru.practicum.shareit.booking.mapper.BookingMapperDpa;
 import ru.practicum.shareit.booking.model.Booking;
 
 @Repository
-public interface BookingRepository extends JpaRepository<Booking, Integer>, BookingMapperDpa {
+public interface BookingRepository extends JpaRepository<Booking, Integer> {
 }

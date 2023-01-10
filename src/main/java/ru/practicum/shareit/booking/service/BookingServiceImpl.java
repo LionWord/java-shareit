@@ -1,8 +1,9 @@
-package ru.practicum.shareit.booking.model.service;
+package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.mapper.BookingMapperDpa;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
@@ -26,8 +27,7 @@ public class BookingServiceImpl implements BookingService{
     public BookingDto createBookingRequest(Booking booking, int bookerId) {
         booking.setBookerId(bookerId);
         bookingRepository.save(booking);
-        BookingDto bookingDto = bookingRepository.dtoFromBooking(booking);
-        bookingDto.setItemName(itemRepository.findById(booking.getItemId()).get().getName());
+        BookingDto bookingDto = BookingMapperDpa.make(booking, itemRepository);
         return bookingDto;
     }
     @Override
