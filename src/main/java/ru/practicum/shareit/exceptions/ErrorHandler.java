@@ -10,34 +10,27 @@ import javax.validation.ConstraintViolationException;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler(InvalidEmailException.class)
+    @ExceptionHandler({InvalidEmailException.class,
+            NotOwnerException.class,
+            NotAvailableException.class,
+            WrongTimestampException.class,
+            IllegalArgumentException.class,
+            UnsupportedStatusException.class,
+            InvalidItemInputException.class,
+            ConstraintViolationException.class,
+            AlreadyApprovedException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionMessage handleInvalidEmailException(InvalidEmailException e) {
-        return new ExceptionMessage("400", e.getMessage());
+    public ExceptionMessage handleRuntimeException(RuntimeException e) {
+        return new ExceptionMessage(e.getMessage());
     }
 
-    @ExceptionHandler({NoSuchUserException.class, NoSuchItemException.class})
+    @ExceptionHandler({NoSuchUserException.class,
+            NoSuchItemException.class,
+            NoSuchBookingException.class,
+            WrongUserIdException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionMessage handleNoSuchUserException(RuntimeException e) {
-        return new ExceptionMessage("404", e.getMessage());
-    }
-
-    @ExceptionHandler({WrongUserIdException.class})
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ExceptionMessage handleWrongUserException(WrongUserIdException e) {
-        return new ExceptionMessage("404", e.getMessage());
-    }
-
-    @ExceptionHandler(InvalidItemInputException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionMessage handleInvalidItemInputException(InvalidItemInputException e) {
-        return new ExceptionMessage("400", e.getMessage());
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ExceptionMessage handleConstraintViolationException(ConstraintViolationException e) {
-        return new ExceptionMessage("400", e.getMessage());
+    public ExceptionMessage handleNotFoundException(RuntimeException e) {
+        return new ExceptionMessage(e.getMessage());
     }
 
 

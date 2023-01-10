@@ -1,20 +1,11 @@
 package ru.practicum.shareit.exceptions;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class ExceptionMessage {
+    final String error;
 
-    final String errorCode;
-    final String errorMessage;
-
-    public ExceptionMessage(String errorCode, String errorMessage) {
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
 }

@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapperDpa;
@@ -12,6 +13,8 @@ import ru.practicum.shareit.exceptions.NoSuchBookingException;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.utils.Messages;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,43 +29,71 @@ public class BookingServiceImpl implements BookingService{
     @Override
     public BookingDto createBookingRequest(Booking booking, int bookerId) {
         booking.setBookerId(bookerId);
-        bookingRepository.save(booking);
+        booking = bookingRepository.save(booking);
         BookingDto bookingDto = BookingMapperDpa.make(booking, itemRepository);
         return bookingDto;
     }
     @Override
-    public Booking approveBookingRequest(int bookingId) {
+    public BookingDto approveBookingRequest(int bookingId) {
         Optional<Booking> booking = bookingRepository.findById(bookingId);
         if (booking.isEmpty()) {
             throw new NoSuchBookingException(Messages.NO_SUCH_BOOKING);
         }
         booking.get().setStatus(Status.APPROVED);
-        return bookingRepository.save(booking.get());
+        bookingRepository.save(booking.get());
+        return BookingMapperDpa.make(booking.get(), itemRepository);
     }
     @Override
-    public Booking rejectBookingRequest(int bookingId) {
+    public BookingDto rejectBookingRequest(int bookingId) {
         Optional<Booking> booking = bookingRepository.findById(bookingId);
         if (booking.isEmpty()) {
             throw new NoSuchBookingException(Messages.NO_SUCH_BOOKING);
         }
         booking.get().setStatus(Status.REJECTED);
-        return bookingRepository.save(booking.get());
+        bookingRepository.save(booking.get());
+        return BookingMapperDpa.make(booking.get(), itemRepository);
     }
     @Override
-    public Optional<Booking> getBookingInformation(int bookingId, int requesterId) {
-        return bookingRepository.findById(bookingId);
+    public Optional<BookingDto> getBookingInformation(int bookingId) {
+        Optional<Booking> booking = bookingRepository.findById(bookingId);
+        return booking.map(value -> BookingMapperDpa.make(value, itemRepository));
     }
     @Override
-    public List<Booking> getAllUserBookings(int userId, State state) {
-        return bookingRepository.findAll().stream()
+    public List<BookingDto> getAllUserBookings(int userId, State state) {
+        ArrayList<BookingDto> result = new ArrayList<>();
+        bookingRepository.findAll().stream()
                 .filter(booking -> booking.getBookerId() == userId)
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(Booking::getStart).reversed())
+                .forEach(booking -> result.add(BookingMapperDpa.make(booking, itemRepository)));
+          if (state.equals(State.WAITING)) {
+            return result.stream()
+                    .filter(bookingDto -> bookingDto.getStatus().equals(Status.WAITING))
+                    .collect(Collectors.toList());
+        } else if (state.equals(State.REJECTED)) {
+            return result.stream()
+                    .filter(bookingDto -> bookingDto.getStatus().equals(Status.REJECTED))
+                    .collect(Collectors.toList());
+        }
+          return result;
+
     }
     @Override
-    public List<Booking> getAllOwnerBookings(int userId, State state) {
-        return bookingRepository.findAll().stream()
+    public List<BookingDto> getAllOwnerBookings(int userId, State state) {
+        ArrayList<BookingDto> result = new ArrayList<>();
+        bookingRepository.findAll().stream()
                 .filter(bookingDto -> itemRepository.findById(bookingDto.getItemId()).get().getOwnerId() == userId)
-                .collect(Collectors.toList());
+                .sorted(Comparator.comparing(Booking::getStart).reversed())
+                .forEach(booking -> result.add(BookingMapperDpa.make(booking, itemRepository)));
+        if (state.equals(State.WAITING)) {
+            return result.stream()
+                    .filter(bookingDto -> bookingDto.getStatus().equals(Status.WAITING))
+                    .collect(Collectors.toList());
+        } else if (state.equals(State.REJECTED)) {
+            return result.stream()
+                    .filter(bookingDto -> bookingDto.getStatus().equals(Status.REJECTED))
+                    .collect(Collectors.toList());
+        }
+        return result;
     }
 
 }
