@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.utils.Messages;
 
 import javax.persistence.EntityManagerFactory;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,6 +47,7 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> getAllMyItems(int userId) {
         return itemRepository.findAll().stream()
                 .filter(item -> item.getOwnerId() == userId)
+                .sorted(Comparator.comparingInt(Item::getId))
                 .collect(Collectors.toList());
     }
 

@@ -12,7 +12,6 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.Messages;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
@@ -38,12 +37,18 @@ public class BookingController {
         if (itemService.getItem(booking.getItemId()).isEmpty()) {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
+
+        if (itemService.getItem(booking.getItemId()).get().getOwnerId() == userId) {
+            throw new BookingSelfOwnedItemException(Messages.SELF_OWNED_ITEM);
+        }
         if (!itemService.getItem(booking.getItemId()).get().getAvailable()) {
             throw new NotAvailableException(Messages.NOT_AVAILABLE);
         }
         if (!timestampIsCorrect(booking)) {
             throw new WrongTimestampException(Messages.WRONG_TIMESTAMP);
         }
+
+
         return bookingService.createBookingRequest(booking, userId);
     }
 

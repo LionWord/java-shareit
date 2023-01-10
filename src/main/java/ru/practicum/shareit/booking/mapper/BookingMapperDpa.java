@@ -2,8 +2,10 @@ package ru.practicum.shareit.booking.mapper;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.booking.model.Booker;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
 
@@ -22,4 +24,10 @@ public class BookingMapperDpa {
         bookingDto.setItem(item);
         return bookingDto;
     };
+    public static BookingShortDto makeShort(int bookingId, int bookerId) {
+        BookingShortDto shortDto = new BookingShortDto();
+        shortDto.setId(bookingId);
+        shortDto.setBookerId(bookerId);
+        return shortDto;
+    }
 }

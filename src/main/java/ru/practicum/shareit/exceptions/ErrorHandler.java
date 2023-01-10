@@ -27,7 +27,8 @@ public class ErrorHandler {
     @ExceptionHandler({NoSuchUserException.class,
             NoSuchItemException.class,
             NoSuchBookingException.class,
-            WrongUserIdException.class})
+            WrongUserIdException.class,
+            BookingSelfOwnedItemException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionMessage handleNotFoundException(RuntimeException e) {
         return new ExceptionMessage(e.getMessage());

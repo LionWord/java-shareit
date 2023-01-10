@@ -17,4 +17,5 @@ public class Messages {
     public static final String WRONG_TIMESTAMP = "Wrong start or end booking params";
     public static final String ALREADY_APPROVED = "Booking was already approved";
     public static final String UNKNOWN_STATE = "Unknown state: ";
+    public static final String SELF_OWNED_ITEM = "Item owner can't book own items";
 }
