@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ItemCommentsDto extends ItemForOwnerDto {
+public class ItemCommentsDto extends ItemBookingDatesDto {
     private List<CommentDto> comments = new ArrayList<>();
 }

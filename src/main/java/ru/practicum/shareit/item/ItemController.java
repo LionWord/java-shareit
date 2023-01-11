@@ -1,32 +1,24 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.mapper.BookingMapperDpa;
 import ru.practicum.shareit.booking.model.State;
-import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exceptions.InvalidItemInputException;
 import ru.practicum.shareit.exceptions.NoSuchItemException;
 import ru.practicum.shareit.exceptions.NoSuchUserException;
-import ru.practicum.shareit.exceptions.WrongUserIdException;
 import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentDto;
-import ru.practicum.shareit.item.dto.ItemCommentsDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemForOwnerDto;
-import ru.practicum.shareit.item.mapper.ItemOwnerMapper;
+import ru.practicum.shareit.item.dto.ItemBookingDatesDto;
+import ru.practicum.shareit.item.mapper.ItemBookingDatesMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.user.service.UserServiceImpl;
-import ru.practicum.shareit.utils.ItemValidator;
 import ru.practicum.shareit.utils.Messages;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -69,7 +61,7 @@ public class ItemController {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
         List<BookingDto> bookingDtoListOwner = bookingService.getAllOwnerBookings(userId, State.ALL);
-        ItemForOwnerDto alteredItem = ItemOwnerMapper.mapFromItem(item.get(), bookingDtoListOwner);
+        ItemBookingDatesDto alteredItem = ItemBookingDatesMapper.mapFromItem(item.get(), bookingDtoListOwner);
         if (item.get().getOwnerId() == userId) {
             return Optional.of(alteredItem);
         }
@@ -86,7 +78,7 @@ public class ItemController {
             return List.of();
         }
         return items.stream()
-                .map(item -> ItemOwnerMapper.mapFromItem(item, bookingDtoOwnerList))
+                .map(item -> ItemBookingDatesMapper.mapFromItem(item, bookingDtoOwnerList))
                 .collect(Collectors.toList());
     }
 
@@ -99,7 +91,35 @@ public class ItemController {
     public CommentDto postComment(@RequestHeader("X-Sharer-User-Id") int userId,
                                   @PathVariable int itemId,
                                   @RequestBody Comment comment) {
+        if (comment.getText().isEmpty()) {
+            throw new IllegalArgumentException("Empty comment");
+        }
+        if (!canPostComments(userId, itemId)) {
+            throw new IllegalArgumentException("Can't post comments");
+        }
         return itemService.postComment(userId, itemId, comment);
     }
+    //------Service methods---------
 
+    private boolean canPostComments(int userId, int itemId) {
+        List<BookingDto> bookingDtoUserList = bookingService.getAllUserBookings(userId, State.ALL);
+        if (bookingDtoUserList.isEmpty()) {
+            return false;
+        }
+        BookingDto bookingDto = null;
+        for (BookingDto b : bookingDtoUserList) {
+            if (b.getItem().getId() == itemId) {
+                bookingDto = b;
+                break;
+            }
+        }
+        if (bookingDto == null) {
+            return false;
+        }
+        Timestamp now = Timestamp.from(Instant.now());
+        if (bookingDto.getStart().after(now)) {
+            return false;
+        }
+        return true;
+    }
 }
