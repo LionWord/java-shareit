@@ -18,7 +18,9 @@ public class ErrorHandler {
             UnsupportedStatusException.class,
             InvalidItemInputException.class,
             ConstraintViolationException.class,
-            AlreadyApprovedException.class})
+            AlreadyApprovedException.class,
+            EmptyCommentException.class,
+            CantCommentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionMessage handleRuntimeException(RuntimeException e) {
         return new ExceptionMessage(e.getMessage());

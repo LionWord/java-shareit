@@ -20,6 +20,7 @@ public interface ItemService {
     List<Item> getAllMyItems(int userId);
 
     List<Item> searchItem(String query);
+
     CommentDto postComment(int userId, int itemId, Comment comment);
 
 }

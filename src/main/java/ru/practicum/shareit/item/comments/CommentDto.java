@@ -1,13 +1,9 @@
 package ru.practicum.shareit.item.comments;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.shareit.user.service.UserService;
-
-import java.sql.Timestamp;
-import java.time.Instant;
 
 @Getter
 @Setter
@@ -16,7 +12,7 @@ public class CommentDto extends Comment {
 
     private String authorName;
 
-    public static CommentDto MapToDto(Comment comment, UserService userService) {
+    public static CommentDto mapToDto(Comment comment, UserService userService) {
         CommentDto commentDto = new CommentDto();
         commentDto.setText(comment.getText());
         commentDto.setId(comment.getId());

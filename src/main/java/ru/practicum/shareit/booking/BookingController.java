@@ -10,7 +10,7 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.utils.Messages;
+import ru.practicum.shareit.user.utils.Messages;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -55,8 +55,8 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public BookingDto approveBookingRequest(@RequestHeader("X-Sharer-User-Id") int ownerId,
-                                         @PathVariable int bookingId,
-                                         @RequestParam(name = "approved") boolean approved) {
+                                            @PathVariable int bookingId,
+                                            @RequestParam(name = "approved") boolean approved) {
         int itemId = bookingService.getBookingInformation(bookingId).get().getItem().getId();
         if (itemService.getItem(itemId).get().getOwnerId() != ownerId) {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
@@ -90,13 +90,13 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingDto> getAllUserBookings (@RequestHeader("X-Sharer-User-Id") int userId,
-                                             @RequestParam(name = "state", defaultValue = "ALL", required = false) String state) {
+    public List<BookingDto> getAllUserBookings(@RequestHeader("X-Sharer-User-Id") int userId,
+                                               @RequestParam(name = "state", defaultValue = "ALL", required = false) String state) {
         if (userService.getUser(userId).isEmpty()) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
 
-        if(!stateIsValid(state)) {
+        if (!stateIsValid(state)) {
             throw new UnsupportedStatusException(Messages.UNKNOWN_STATE + state);
         }
 
@@ -105,19 +105,17 @@ public class BookingController {
 
     @GetMapping("/owner")
     public List<BookingDto> getAllOwnerBookings(@RequestHeader("X-Sharer-User-Id") int userId,
-                                             @RequestParam(name = "state", defaultValue = "ALL", required = false) String state) {
+                                                @RequestParam(name = "state", defaultValue = "ALL", required = false) String state) {
         if (userService.getUser(userId).isEmpty()) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
 
-        if(!stateIsValid(state)) {
+        if (!stateIsValid(state)) {
             throw new UnsupportedStatusException(Messages.UNKNOWN_STATE + state);
         }
 
         return bookingService.getAllOwnerBookings(userId, State.valueOf(state));
     }
-
-    //-------------Service methods---------------
 
     private boolean timestampIsCorrect(Booking booking) {
         LocalDateTime start = booking.getStart();

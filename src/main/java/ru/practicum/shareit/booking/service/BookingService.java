@@ -11,9 +11,14 @@ import java.util.Optional;
 @Service
 public interface BookingService {
     BookingDto createBookingRequest(Booking booking, int bookerId);
+
     BookingDto approveBookingRequest(int bookingId);
+
     BookingDto rejectBookingRequest(int bookingId);
+
     Optional<BookingDto> getBookingInformation(int bookingId);
+
     List<BookingDto> getAllUserBookings(int userId, State state);
+
     List<BookingDto> getAllOwnerBookings(int userId, State state);
 }

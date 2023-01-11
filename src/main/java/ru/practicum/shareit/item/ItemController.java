@@ -5,17 +5,18 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exceptions.CantCommentException;
+import ru.practicum.shareit.exceptions.EmptyCommentException;
 import ru.practicum.shareit.exceptions.NoSuchItemException;
 import ru.practicum.shareit.exceptions.NoSuchUserException;
 import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDatesCommentsDto;
 import ru.practicum.shareit.item.mapper.ItemDatesCommentsMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.utils.Messages;
+import ru.practicum.shareit.user.utils.Messages;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -36,6 +37,7 @@ public class ItemController {
     private final UserService userService;
 
     private final BookingService bookingService;
+
     @PostMapping
     public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody ItemDto item) {
         if (userService.getUser(userId).isEmpty()) {
@@ -49,7 +51,7 @@ public class ItemController {
                          @PathVariable int itemId,
                          @RequestBody ItemDto item) {
         int itemOwnerId = itemService.getItem(itemId).get().getOwnerId();
-        if (itemOwnerId != userId ) {
+        if (itemOwnerId != userId) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
         return itemService.editItem(itemId, item);
@@ -87,28 +89,22 @@ public class ItemController {
                                   @PathVariable int itemId,
                                   @RequestBody Comment comment) {
         if (comment.getText().isEmpty()) {
-            throw new IllegalArgumentException("Empty comment");
+            throw new EmptyCommentException(Messages.EMPTY_COMMENT);
         }
         if (!canPostComments(userId, itemId)) {
-            throw new IllegalArgumentException("Can't post comments");
+            throw new CantCommentException(Messages.ITEM_WAS_NOT_USED);
         }
         return itemService.postComment(userId, itemId, comment);
     }
-    //------Service methods---------
 
     private boolean canPostComments(int userId, int itemId) {
         BookingDto bookingDto = bookingService.getAllUserBookings(userId, State.ALL).stream()
                 .filter(bookingDto1 -> bookingDto1.getItem().getId() == itemId)
-                .sorted((Comparator.comparing(BookingDto::getStart)))
-                .findFirst().orElse(null);
+                .min(Comparator.comparing(BookingDto::getStart)).orElse(null);
 
         if (bookingDto == null) {
             return false;
         }
-
-        if (bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime())) {
-            return false;
-        }
-        return true;
+        return !bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime());
     }
 }
