@@ -122,8 +122,8 @@ public class BookingController {
         LocalDateTime end = booking.getEnd();
         LocalDateTime now = Timestamp.from(Instant.now()).toLocalDateTime();
         return !end.isBefore(start)
-                & !start.isBefore(now)
-                & !start.isAfter(end);
+                && !start.isBefore(now)
+                && !start.isAfter(end);
     }
 
     private boolean stateIsValid(String state) {
