@@ -57,25 +57,32 @@ public class ItemServiceImpl implements ItemService {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
 
-        int ownerId = item.get().getOwnerId();
+
+        return item;
+
+    }
+
+    @Override
+    public Item addDatesAndComments(int userId, Item item) {
+        int ownerId = item.getOwnerId();
         List<BookingDto> bookingDtoListOwner = bookingService.getAllOwnerBookings(ownerId, State.ALL);
-        ItemDatesCommentsDto itemDto = ItemDatesCommentsMapper.mapFromItem(item.get(), bookingDtoListOwner);
+        ItemDatesCommentsDto itemDto = ItemDatesCommentsMapper.mapFromItem(item, bookingDtoListOwner);
 
         List<CommentDto> comments = commentRepository.findAll().stream()
-                .filter(comment -> comment.getItemId() == itemId)
+                .filter(comment -> comment.getItemId() == item.getId())
                 .map(comment -> CommentDto.MapToDto(comment, userService))
                 .collect(Collectors.toList());
-        /*if (!comments.isEmpty()) {
+        if (!comments.isEmpty()) {
             itemDto.setComments(comments);
-        }*/
+        }
 
-        if (item.get().getOwnerId() != ownerId) {
+        if (item.getOwnerId() != userId) {
             itemDto.setLastBooking(null);
             itemDto.setNextBooking(null);
         }
-        return Optional.of(itemDto);
 
-    }
+        return itemDto;
+    };
 
     @Override
     public List<Item> getAllMyItems(int userId) {

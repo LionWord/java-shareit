@@ -62,7 +62,7 @@ public class ItemController {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
 
-        return item;
+        return Optional.of(itemService.addDatesAndComments(userId, item.get()));
     }
 
     @GetMapping

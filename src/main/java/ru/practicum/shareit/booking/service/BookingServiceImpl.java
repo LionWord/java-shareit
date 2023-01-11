@@ -61,58 +61,82 @@ public class BookingServiceImpl implements BookingService{
     }
     @Override
     public List<BookingDto> getAllUserBookings(int userId, State state) {
-        ArrayList<BookingDto> result = new ArrayList<>();
+        ArrayList<BookingDto> list = new ArrayList<>();
         bookingRepository.findAll().stream()
                 .filter(booking -> booking.getBookerId() == userId)
                 .sorted(Comparator.comparing(Booking::getStart).reversed())
-                .forEach(booking -> result.add(BookingMapperDpa.make(booking, itemRepository)));
-          if (state.equals(State.WAITING)) {
-            return result.stream()
+                .forEach(booking -> list.add(BookingMapperDpa.make(booking, itemRepository)));
+          /*if (state.equals(State.WAITING)) {
+            return list.stream()
                     .filter(bookingDto -> bookingDto.getStatus().equals(Status.WAITING))
                     .collect(Collectors.toList());
         } else if (state.equals(State.REJECTED)) {
-            return result.stream()
+            return list.stream()
                     .filter(bookingDto -> bookingDto.getStatus().equals(Status.REJECTED))
                     .collect(Collectors.toList());
         } else if (state.equals(State.PAST)) {
-              return result.stream()
+              return list.stream()
                       .filter(bookingDto -> bookingDto.getEnd().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()))
                       .collect(Collectors.toList());
           } else if (state.equals(State.CURRENT)) {
-              return result.stream()
+              return list.stream()
                       .filter(bookingDto -> bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()))
                       .filter(bookingDto -> bookingDto.getEnd().isBefore(Timestamp.from(Instant.now()).toLocalDateTime()))
                       .collect(Collectors.toList());
-          }
-          return result;
+          }*/
+          return filterBookingsByState(list, state);
 
     }
     @Override
     public List<BookingDto> getAllOwnerBookings(int userId, State state) {
-        ArrayList<BookingDto> result = new ArrayList<>();
+        ArrayList<BookingDto> list = new ArrayList<>();
         bookingRepository.findAll().stream()
                 .filter(bookingDto -> itemRepository.findById(bookingDto.getItemId()).get().getOwnerId() == userId)
                 .sorted(Comparator.comparing(Booking::getStart).reversed())
-                .forEach(booking -> result.add(BookingMapperDpa.make(booking, itemRepository)));
-        if (state.equals(State.WAITING)) {
-            return result.stream()
+                .forEach(booking -> list.add(BookingMapperDpa.make(booking, itemRepository)));
+        /*if (state.equals(State.WAITING)) {
+            return list.stream()
                     .filter(bookingDto -> bookingDto.getStatus().equals(Status.WAITING))
                     .collect(Collectors.toList());
         } else if (state.equals(State.REJECTED)) {
-            return result.stream()
+            return list.stream()
                     .filter(bookingDto -> bookingDto.getStatus().equals(Status.REJECTED))
                     .collect(Collectors.toList());
         } else if (state.equals(State.PAST)) {
-            return result.stream()
+            return list.stream()
                     .filter(bookingDto -> bookingDto.getEnd().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()))
                     .collect(Collectors.toList());
         } else if (state.equals(State.CURRENT)) {
-            return result.stream()
+            return list.stream()
                     .filter(bookingDto -> bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()))
                     .filter(bookingDto -> bookingDto.getEnd().isBefore(Timestamp.from(Instant.now()).toLocalDateTime()))
                     .collect(Collectors.toList());
+        }*/
+        return filterBookingsByState(list, state);
+    }
+
+    private List<BookingDto> filterBookingsByState(List<BookingDto> list, State state) {
+        switch (state) {
+            case WAITING:
+                return list.stream()
+                        .filter(bookingDto -> bookingDto.getStatus().equals(Status.WAITING))
+                        .collect(Collectors.toList());
+            case REJECTED:
+                return list.stream()
+                        .filter(bookingDto -> bookingDto.getStatus().equals(Status.REJECTED))
+                        .collect(Collectors.toList());
+            case PAST:
+                return list.stream()
+                        .filter(bookingDto -> bookingDto.getEnd().isBefore(Timestamp.from(Instant.now()).toLocalDateTime()))
+                        .collect(Collectors.toList());
+            case CURRENT:
+                return list.stream()
+                        .filter(bookingDto -> bookingDto.getStart().isBefore(Timestamp.from(Instant.now()).toLocalDateTime()))
+                        .filter(bookingDto -> bookingDto.getEnd().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()))
+                        .collect(Collectors.toList());
+            default:
+                return list;
         }
-        return result;
     }
 
 }

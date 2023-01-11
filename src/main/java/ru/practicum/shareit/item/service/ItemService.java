@@ -15,6 +15,8 @@ public interface ItemService {
 
     Optional<Item> getItem(int itemId);
 
+    Item addDatesAndComments(int userId, Item item);
+
     List<Item> getAllMyItems(int userId);
 
     List<Item> searchItem(String query);

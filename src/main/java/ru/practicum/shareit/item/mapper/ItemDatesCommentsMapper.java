@@ -16,6 +16,7 @@ public class ItemDatesCommentsMapper {
         newItem.setName(item.getName());
         newItem.setDescription(item.getDescription());
         newItem.setAvailable(item.getAvailable());
+        newItem.setOwnerId(item.getOwnerId());
 
         if (bookingDtoList.isEmpty()) {
             newItem.setLastBooking(null);
