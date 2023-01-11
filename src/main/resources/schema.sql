@@ -27,7 +27,7 @@ create table if not exists bookings
     start_date timestamp not null,
     end_date   timestamp not null,
     item_id    integer   not null
-        constraint item
+        constraint "ITEM_BOOKING"
             references items,
     booker_id  integer   not null
         constraint booker
@@ -41,7 +41,7 @@ create table if not exists comments
         primary key,
     comment_text varchar not null,
     item_id      integer not null
-        constraint item
+        constraint "ITEM_COMMENTS"
             references items,
     author_id    integer not null
         constraint author
