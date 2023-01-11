@@ -17,8 +17,12 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.Messages;
 
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -102,22 +106,18 @@ public class ItemController {
     //------Service methods---------
 
     private boolean canPostComments(int userId, int itemId) {
-        List<BookingDto> bookingDtoUserList = bookingService.getAllUserBookings(userId, State.ALL);
-        if (bookingDtoUserList.isEmpty()) {
-            return false;
-        }
-        BookingDto bookingDto = null;
-        for (BookingDto b : bookingDtoUserList) {
-            if (b.getItem().getId() == itemId) {
-                bookingDto = b;
-                break;
-            }
-        }
+        BookingDto bookingDto = bookingService.getAllUserBookings(userId, State.ALL).stream()
+                .filter(bookingDto1 -> bookingDto1.getItem().getId() == itemId)
+                .sorted((Comparator.comparing(BookingDto::getStart)))
+                .findFirst().orElse(null);
+
         if (bookingDto == null) {
             return false;
         }
-        Timestamp now = Timestamp.from(Instant.now());
-        if (bookingDto.getStart().after(now)) {
+        LocalDateTime start = bookingDto.getStart().toLocalDateTime();
+        LocalDateTime now = Timestamp.from(Instant.now()).toLocalDateTime().plusHours(3);
+
+        if (start.isAfter(now)) {
             return false;
         }
         return true;
