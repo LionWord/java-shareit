@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.model.Item;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -21,11 +22,11 @@ public class Booking {
 
     @NotNull
     @Column(name = "start_date")
-    private Timestamp start;
+    private LocalDateTime start;
 
     @NotNull
     @Column(name = "end_date")
-    private Timestamp end;
+    private LocalDateTime end;
 
     @NotNull
     @Column(name = "item_id")

@@ -14,6 +14,7 @@ import ru.practicum.shareit.utils.Messages;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -119,12 +120,12 @@ public class BookingController {
     //-------------Service methods---------------
 
     private boolean timestampIsCorrect(Booking booking) {
-        Timestamp start = booking.getStart();
-        Timestamp end = booking.getEnd();
-        Timestamp now = Timestamp.from(Instant.now());
-        return !end.before(start)
-                & !start.before(now)
-                & !start.after(end);
+        LocalDateTime start = booking.getStart();
+        LocalDateTime end = booking.getEnd();
+        LocalDateTime now = Timestamp.from(Instant.now()).toLocalDateTime();
+        return !end.isBefore(start)
+                & !start.isBefore(now)
+                & !start.isAfter(end);
     }
 
     private boolean stateIsValid(String state) {

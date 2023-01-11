@@ -114,10 +114,8 @@ public class ItemController {
         if (bookingDto == null) {
             return false;
         }
-        LocalDateTime start = bookingDto.getStart().toLocalDateTime();
-        LocalDateTime now = Timestamp.from(Instant.now()).toLocalDateTime().plusHours(3);
 
-        if (start.isAfter(now)) {
+        if (bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime())) {
             return false;
         }
         return true;
