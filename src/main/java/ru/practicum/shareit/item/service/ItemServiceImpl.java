@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -16,12 +15,10 @@ import ru.practicum.shareit.item.mapper.ItemDatesCommentsMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.utils.Messages;
+import ru.practicum.shareit.user.utils.Messages;
 
-import javax.persistence.EntityManagerFactory;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +46,7 @@ public class ItemServiceImpl implements ItemService {
         itemRepository.updateItem(item, myItem);
         return itemRepository.save(myItem);
     }
+
     @Override
     public Optional<Item> getItem(int itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
@@ -82,7 +80,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return itemDto;
-    };
+    }
 
     @Override
     public List<Item> getAllMyItems(int userId) {
@@ -107,8 +105,7 @@ public class ItemServiceImpl implements ItemService {
         comment.setItemId(itemId);
         comment.setAuthorId(userId);
         comment.setCreated(Timestamp.from(Instant.now()).toLocalDateTime());
-        CommentDto commentDto = CommentDto.MapToDto(commentRepository.save(comment), userService);
-        return commentDto;
+        return CommentDto.MapToDto(commentRepository.save(comment), userService);
     }
 
 }

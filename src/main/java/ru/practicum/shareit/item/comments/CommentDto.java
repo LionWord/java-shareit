@@ -1,13 +1,9 @@
 package ru.practicum.shareit.item.comments;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.shareit.user.service.UserService;
-
-import java.sql.Timestamp;
-import java.time.Instant;
 
 @Getter
 @Setter

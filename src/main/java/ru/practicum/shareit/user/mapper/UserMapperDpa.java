@@ -16,7 +16,4 @@ public interface UserMapperDpa {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     User userFromDto(UserDto user);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    UserDto dtoFromUser(User user);
-
 }
