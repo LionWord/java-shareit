@@ -12,6 +12,9 @@ import ru.practicum.shareit.exceptions.InvalidItemInputException;
 import ru.practicum.shareit.exceptions.NoSuchItemException;
 import ru.practicum.shareit.exceptions.NoSuchUserException;
 import ru.practicum.shareit.exceptions.WrongUserIdException;
+import ru.practicum.shareit.item.comments.Comment;
+import ru.practicum.shareit.item.comments.CommentDto;
+import ru.practicum.shareit.item.dto.ItemCommentsDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemForOwnerDto;
 import ru.practicum.shareit.item.mapper.ItemOwnerMapper;
@@ -82,21 +85,21 @@ public class ItemController {
         if (items.isEmpty()) {
             return List.of();
         }
-        List<Item> testList = new ArrayList<>();
-
-        for (int i = 0; i < items.size(); i++) {
-            testList.add(ItemOwnerMapper.mapFromItem(items.get(i), bookingDtoOwnerList));
-        }
-
-        return testList;
-        /*return items.stream()
+        return items.stream()
                 .map(item -> ItemOwnerMapper.mapFromItem(item, bookingDtoOwnerList))
-                .collect(Collectors.toList());*/
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/search")
     public List<Item> searchItem(@RequestParam(name = "text") String query) {
         return itemService.searchItem(query);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDto postComment(@RequestHeader("X-Sharer-User-Id") int userId,
+                                  @PathVariable int itemId,
+                                  @RequestBody Comment comment) {
+        return itemService.postComment(userId, itemId, comment);
     }
 
 }

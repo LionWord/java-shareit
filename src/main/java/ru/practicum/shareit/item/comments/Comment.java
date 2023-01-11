@@ -1,23 +1,24 @@
 package ru.practicum.shareit.item.comments;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
+@Table(name = "comments")
+@NoArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int commentId;
-    @NotNull
-    private String commentText;
-    @NotNull
+    @Column(name = "comment_id")
+    private int id;
+    @Column(name = "comment_text")
+    private String text;
+    @Column(name = "item_id")
     private int itemId;
-    @NotNull
-    private int author_id;
+    @Column(name = "author_id")
+    private int authorId;
 }

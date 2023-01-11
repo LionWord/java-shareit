@@ -4,9 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.NoSuchItemException;
+import ru.practicum.shareit.item.comments.Comment;
+import ru.practicum.shareit.item.comments.CommentDto;
+import ru.practicum.shareit.item.comments.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.Messages;
 
 import javax.persistence.EntityManagerFactory;
@@ -20,6 +24,8 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
+    private final CommentRepository commentRepository;
+    private final UserService userService;
 
     @Override
     public Item saveItem(int userId, ItemDto item) {
@@ -59,6 +65,14 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(query, query).stream()
                 .filter(Item::getAvailable)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto postComment(int userId, int itemId, Comment comment) {
+        comment.setItemId(itemId);
+        comment.setAuthorId(userId);
+        CommentDto commentDto = CommentDto.MapToDto(commentRepository.save(comment), userService);
+        return commentDto;
     }
 
 }
