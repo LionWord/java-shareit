@@ -12,6 +12,8 @@ import ru.practicum.shareit.exceptions.NoSuchBookingException;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.utils.Messages;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -72,7 +74,16 @@ public class BookingServiceImpl implements BookingService{
             return result.stream()
                     .filter(bookingDto -> bookingDto.getStatus().equals(Status.REJECTED))
                     .collect(Collectors.toList());
-        }
+        } else if (state.equals(State.PAST)) {
+              return result.stream()
+                      .filter(bookingDto -> bookingDto.getEnd().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()))
+                      .collect(Collectors.toList());
+          } else if (state.equals(State.CURRENT)) {
+              return result.stream()
+                      .filter(bookingDto -> bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()))
+                      .filter(bookingDto -> bookingDto.getEnd().isBefore(Timestamp.from(Instant.now()).toLocalDateTime()))
+                      .collect(Collectors.toList());
+          }
           return result;
 
     }
@@ -90,6 +101,15 @@ public class BookingServiceImpl implements BookingService{
         } else if (state.equals(State.REJECTED)) {
             return result.stream()
                     .filter(bookingDto -> bookingDto.getStatus().equals(Status.REJECTED))
+                    .collect(Collectors.toList());
+        } else if (state.equals(State.PAST)) {
+            return result.stream()
+                    .filter(bookingDto -> bookingDto.getEnd().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()))
+                    .collect(Collectors.toList());
+        } else if (state.equals(State.CURRENT)) {
+            return result.stream()
+                    .filter(bookingDto -> bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()))
+                    .filter(bookingDto -> bookingDto.getEnd().isBefore(Timestamp.from(Instant.now()).toLocalDateTime()))
                     .collect(Collectors.toList());
         }
         return result;

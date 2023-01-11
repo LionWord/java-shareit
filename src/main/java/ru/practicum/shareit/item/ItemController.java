@@ -10,18 +10,15 @@ import ru.practicum.shareit.exceptions.NoSuchUserException;
 import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemBookingDatesDto;
-import ru.practicum.shareit.item.mapper.ItemBookingDatesMapper;
+import ru.practicum.shareit.item.dto.ItemDatesCommentsDto;
+import ru.practicum.shareit.item.mapper.ItemDatesCommentsMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.Messages;
 
-import java.sql.Time;
 import java.sql.Timestamp;
-import java.time.Clock;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -64,14 +61,8 @@ public class ItemController {
         if (item.isEmpty()) {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
-        List<BookingDto> bookingDtoListOwner = bookingService.getAllOwnerBookings(userId, State.ALL);
-        ItemBookingDatesDto alteredItem = ItemBookingDatesMapper.mapFromItem(item.get(), bookingDtoListOwner);
-        if (item.get().getOwnerId() == userId) {
-            return Optional.of(alteredItem);
-        }
-        alteredItem.setLastBooking(null);
-        alteredItem.setNextBooking(null);
-        return Optional.of(alteredItem);
+
+        return item;
     }
 
     @GetMapping
@@ -82,7 +73,7 @@ public class ItemController {
             return List.of();
         }
         return items.stream()
-                .map(item -> ItemBookingDatesMapper.mapFromItem(item, bookingDtoOwnerList))
+                .map(item -> ItemDatesCommentsMapper.mapFromItem(item, bookingDtoOwnerList))
                 .collect(Collectors.toList());
     }
 

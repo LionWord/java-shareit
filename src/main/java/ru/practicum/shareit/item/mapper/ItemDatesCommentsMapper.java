@@ -2,16 +2,16 @@ package ru.practicum.shareit.item.mapper;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingShortDto;
-import ru.practicum.shareit.item.dto.ItemBookingDatesDto;
+import ru.practicum.shareit.item.dto.ItemDatesCommentsDto;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-public class ItemBookingDatesMapper {
+public class ItemDatesCommentsMapper {
 
-    public static ItemBookingDatesDto mapFromItem(Item item, List<BookingDto> bookingDtoList) {
+    public static ItemDatesCommentsDto mapFromItem(Item item, List<BookingDto> bookingDtoList) {
 
-        ItemBookingDatesDto newItem = new ItemBookingDatesDto();
+        ItemDatesCommentsDto newItem = new ItemDatesCommentsDto();
         newItem.setId(item.getId());
         newItem.setName(item.getName());
         newItem.setDescription(item.getDescription());

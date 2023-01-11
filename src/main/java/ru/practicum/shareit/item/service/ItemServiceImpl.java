@@ -3,17 +3,25 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.model.State;
+import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.NoSuchItemException;
 import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentDto;
 import ru.practicum.shareit.item.comments.CommentRepository;
+import ru.practicum.shareit.item.dto.ItemDatesCommentsDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemDatesCommentsMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.Messages;
 
 import javax.persistence.EntityManagerFactory;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +34,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CommentRepository commentRepository;
     private final UserService userService;
+    private final BookingService bookingService;
 
     @Override
     public Item saveItem(int userId, ItemDto item) {
@@ -43,10 +52,29 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Optional<Item> getItem(int itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
+
         if (item.isEmpty()) {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
-        return item;
+
+        int ownerId = item.get().getOwnerId();
+        List<BookingDto> bookingDtoListOwner = bookingService.getAllOwnerBookings(ownerId, State.ALL);
+        ItemDatesCommentsDto itemDto = ItemDatesCommentsMapper.mapFromItem(item.get(), bookingDtoListOwner);
+
+        List<CommentDto> comments = commentRepository.findAll().stream()
+                .filter(comment -> comment.getItemId() == itemId)
+                .map(comment -> CommentDto.MapToDto(comment, userService))
+                .collect(Collectors.toList());
+        /*if (!comments.isEmpty()) {
+            itemDto.setComments(comments);
+        }*/
+
+        if (item.get().getOwnerId() != ownerId) {
+            itemDto.setLastBooking(null);
+            itemDto.setNextBooking(null);
+        }
+        return Optional.of(itemDto);
+
     }
 
     @Override
@@ -71,6 +99,7 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto postComment(int userId, int itemId, Comment comment) {
         comment.setItemId(itemId);
         comment.setAuthorId(userId);
+        comment.setCreated(Timestamp.from(Instant.now()).toLocalDateTime());
         CommentDto commentDto = CommentDto.MapToDto(commentRepository.save(comment), userService);
         return commentDto;
     }

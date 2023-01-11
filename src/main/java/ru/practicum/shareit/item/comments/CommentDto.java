@@ -13,8 +13,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 public class CommentDto extends Comment {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-DD'T'HH:mm:ss")
-    private Timestamp created;
+
     private String authorName;
 
     public static CommentDto MapToDto(Comment comment, UserService userService) {
@@ -24,7 +23,7 @@ public class CommentDto extends Comment {
         commentDto.setItemId(comment.getItemId());
         commentDto.setAuthorId(comment.getAuthorId());
         commentDto.setAuthorName(userService.getUser(comment.getAuthorId()).get().getName());
-        commentDto.setCreated(Timestamp.from(Instant.now()));
+        commentDto.setCreated(comment.getCreated());
         return commentDto;
     }
 }
