@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exceptions.EmptyCommentException;
 import ru.practicum.shareit.exceptions.NoSuchItemException;
 import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentDto;
@@ -106,6 +107,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public CommentDto postComment(int userId, int itemId, Comment comment) {
+        if (comment.getText().isEmpty()) {
+            throw new EmptyCommentException(Messages.EMPTY_COMMENT);
+        }
+        Validators.checkIfCanPostComments(userId, itemId, bookingService);
         comment.setItemId(itemId);
         comment.setAuthorId(userId);
         comment.setCreated(Timestamp.from(Instant.now()).toLocalDateTime());

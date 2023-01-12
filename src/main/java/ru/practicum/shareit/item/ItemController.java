@@ -68,23 +68,7 @@ public class ItemController {
     public CommentDto postComment(@RequestHeader("X-Sharer-User-Id") int userId,
                                   @PathVariable int itemId,
                                   @RequestBody Comment comment) {
-        if (comment.getText().isEmpty()) {
-            throw new EmptyCommentException(Messages.EMPTY_COMMENT);
-        }
-        if (!canPostComments(userId, itemId)) {
-            throw new CantCommentException(Messages.ITEM_WAS_NOT_USED);
-        }
         return itemService.postComment(userId, itemId, comment);
     }
 
-    private boolean canPostComments(int userId, int itemId) {
-        BookingDto bookingDto = bookingService.getAllUserBookings(userId, State.ALL.name()).stream()
-                .filter(bookingDto1 -> bookingDto1.getItem().getId() == itemId)
-                .min(Comparator.comparing(BookingDto::getStart)).orElse(null);
-
-        if (bookingDto == null) {
-            return false;
-        }
-        return !bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime());
-    }
 }

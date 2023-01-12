@@ -5,6 +5,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class Validators {
@@ -75,6 +77,19 @@ public class Validators {
         if (ownerId != userId) {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
+    }
+
+    public static void checkIfCanPostComments(int userId, int itemId, BookingService bookingService) {
+        BookingDto bookingDto = bookingService.getAllUserBookings(userId, State.ALL.name()).stream()
+                .filter(bookingDto1 -> bookingDto1.getItem().getId() == itemId)
+                .min(Comparator.comparing(BookingDto::getStart)).orElse(null);
+
+        if (bookingDto == null) {
+            throw new CantCommentException(Messages.ITEM_WAS_NOT_USED);
+        }
+        if (bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()) ) {
+            throw new CantCommentException(Messages.ITEM_WAS_NOT_USED);
+        };
     }
 
 }
