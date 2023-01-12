@@ -32,7 +32,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto createBookingRequest(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody Booking booking) {
-        if (userService.getUser(userId).isEmpty()) {
+        /*if (userService.getUser(userId).isEmpty()) {
             throw new NoSuchUserException(Messages.NO_SUCH_USER);
         }
         if (itemService.getItem(booking.getItemId()).isEmpty()) {
@@ -47,7 +47,7 @@ public class BookingController {
         }
         if (!timestampIsCorrect(booking)) {
             throw new WrongTimestampException(Messages.WRONG_TIMESTAMP);
-        }
+        }*/
 
 
         return bookingService.createBookingRequest(booking, userId);

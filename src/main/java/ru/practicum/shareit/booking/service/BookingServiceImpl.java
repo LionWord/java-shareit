@@ -8,12 +8,15 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.exceptions.NoSuchBookingException;
+import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.utils.Messages;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -26,9 +29,11 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     @Override
     public BookingDto createBookingRequest(Booking booking, int bookerId) {
+        bookingValidationSequence(bookerId, booking.getItemId(), booking);
         booking.setBookerId(bookerId);
         booking = bookingRepository.save(booking);
         return BookingMapperDpa.make(booking, itemRepository);
@@ -104,6 +109,42 @@ public class BookingServiceImpl implements BookingService {
                         .collect(Collectors.toList());
             default:
                 return list;
+        }
+    }
+
+
+    private Item returnItemIfValid(int itemId) {
+        Optional<Item> item = itemRepository.findById(itemId);
+        return item.orElseThrow(() -> new NoSuchItemException(Messages.NO_SUCH_ITEM));
+    }
+    private void checkIfAvailable(Item item) {
+        if (!item.getAvailable()) {
+            throw new NotAvailableException(Messages.NOT_AVAILABLE);
+        }
+    }
+    private void checkIfNotOwner(int ownerId, int userId) {
+        if (ownerId == userId) {
+            throw new BookingSelfOwnedItemException(Messages.SELF_OWNED_ITEM);
+        }
+    }
+    private void bookingValidationSequence(int userId, int itemId, Booking booking) {
+        Item item = returnItemIfValid(itemId);
+        userValidator(userId);
+        checkIfAvailable(item);
+        checkIfNotOwner(item.getOwnerId(), userId);
+        timestampIsCorrect(booking);
+    }
+
+    private void userValidator(int userId) {
+        userRepository.findById(userId).orElseThrow(() -> new NoSuchUserException(Messages.NO_SUCH_USER));
+    }
+
+    private void timestampIsCorrect(Booking booking) {
+        LocalDateTime start = booking.getStart();
+        LocalDateTime end = booking.getEnd();
+        LocalDateTime now = Timestamp.from(Instant.now()).toLocalDateTime();
+        if (end.isBefore(start) || start.isBefore(now) || start.isAfter(end)) {
+            throw new WrongTimestampException(Messages.WRONG_TIMESTAMP);
         }
     }
 

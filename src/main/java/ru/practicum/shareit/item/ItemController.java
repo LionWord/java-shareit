@@ -35,7 +35,6 @@ public class ItemController {
 
     private final ItemService itemService;
     private final UserService userService;
-
     private final BookingService bookingService;
 
     @PostMapping
