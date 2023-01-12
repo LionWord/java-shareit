@@ -1,7 +1,9 @@
 package ru.practicum.shareit.utils;
 
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
@@ -26,7 +28,7 @@ public class Validators {
         }
     }
 
-    public static void checkIfUserIsOwner(int ownerId, int userId) {
+    public static void checkBookingOwnItem(int ownerId, int userId) {
         if (ownerId == userId) {
             throw new BookingSelfOwnedItemException(Messages.SELF_OWNED_ITEM);
         }
@@ -55,6 +57,18 @@ public class Validators {
             State.valueOf(state);
         } catch (IllegalArgumentException e) {
             throw new UnsupportedStatusException(Messages.UNKNOWN_STATE + state);
+        }
+    }
+
+    public static void checkBookingApprovedAlready(BookingDto booking) {
+        if (booking.getStatus().equals(Status.APPROVED)) {
+            throw new AlreadyApprovedException(Messages.ALREADY_APPROVED);
+        }
+    }
+
+    public static void checkIfUserOwnItem(int userId, int ownerId) {
+        if (ownerId != userId) {
+            throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
     }
 

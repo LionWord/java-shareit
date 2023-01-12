@@ -40,19 +40,7 @@ public class BookingController {
     public BookingDto approveBookingRequest(@RequestHeader("X-Sharer-User-Id") int ownerId,
                                             @PathVariable int bookingId,
                                             @RequestParam(name = "approved") boolean approved) {
-        int itemId = bookingService.getBookingInformation(bookingId).getItem().getId();
-        if (itemService.getItem(itemId).get().getOwnerId() != ownerId) {
-            throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
-        }
-        if (bookingService.getBookingInformation(bookingId).getStatus().equals(Status.APPROVED)) {
-            throw new AlreadyApprovedException(Messages.ALREADY_APPROVED);
-        }
-        if (approved) {
-            return bookingService.approveBookingRequest(bookingId);
-        } else {
-            return bookingService.rejectBookingRequest(bookingId);
-        }
-
+         return bookingService.changeBookingApprovalStatus(ownerId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")

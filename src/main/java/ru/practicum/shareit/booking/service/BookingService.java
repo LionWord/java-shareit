@@ -20,4 +20,6 @@ public interface BookingService {
     List<BookingDto> getAllUserBookings(int userId, String state);
 
     List<BookingDto> getAllOwnerBookings(int userId, String state);
+
+    BookingDto changeBookingApprovalStatus(int bookerId, int bookingId, boolean approvalStatus);
 }
