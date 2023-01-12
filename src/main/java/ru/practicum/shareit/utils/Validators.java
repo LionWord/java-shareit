@@ -73,6 +73,7 @@ public class Validators {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
     }
+
     public static void checkIfUserOwnItem(int userId, int ownerId) {
         if (ownerId != userId) {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
@@ -87,9 +88,9 @@ public class Validators {
         if (bookingDto == null) {
             throw new CantCommentException(Messages.ITEM_WAS_NOT_USED);
         }
-        if (bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime()) ) {
+        if (bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime())) {
             throw new CantCommentException(Messages.ITEM_WAS_NOT_USED);
-        };
+        }
     }
 
 }

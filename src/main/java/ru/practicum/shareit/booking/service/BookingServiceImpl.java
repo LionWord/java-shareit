@@ -8,11 +8,9 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.exceptions.NoSuchItemException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.utils.Messages;
 import ru.practicum.shareit.utils.Validators;
 
 import java.sql.Timestamp;
@@ -37,6 +35,7 @@ public class BookingServiceImpl implements BookingService {
         booking = bookingRepository.save(booking);
         return BookingMapperDpa.make(booking, itemRepository);
     }
+
     @Override
     public BookingDto changeBookingApprovalStatus(int userId, int bookingId, boolean isApproved) {
         BookingDto booking = getBookingInformation(userId, bookingId);

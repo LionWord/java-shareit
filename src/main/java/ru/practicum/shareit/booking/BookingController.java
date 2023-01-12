@@ -4,20 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.State;
-import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.exceptions.*;
-import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.utils.Messages;
-import ru.practicum.shareit.utils.Validators;
 
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * TODO Sprint add-bookings.
@@ -38,12 +27,12 @@ public class BookingController {
     public BookingDto approveBookingRequest(@RequestHeader("X-Sharer-User-Id") int ownerId,
                                             @PathVariable int bookingId,
                                             @RequestParam(name = "approved") boolean approved) {
-         return bookingService.changeBookingApprovalStatus(ownerId, bookingId, approved);
+        return bookingService.changeBookingApprovalStatus(ownerId, bookingId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public BookingDto getBookingInformation(@RequestHeader("X-Sharer-User-Id") int userId,
-                                                      @PathVariable int bookingId) {
+                                            @PathVariable int bookingId) {
 
         return bookingService.getBookingInformation(userId, bookingId);
     }

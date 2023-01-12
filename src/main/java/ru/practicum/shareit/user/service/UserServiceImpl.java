@@ -7,10 +7,8 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.utils.Messages;
-import ru.practicum.shareit.utils.Validators;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(int userId) {
-        return userRepository.findById(userId).orElseThrow(() ->  new NoSuchUserException(Messages.NO_SUCH_USER));
+        return userRepository.findById(userId).orElseThrow(() -> new NoSuchUserException(Messages.NO_SUCH_USER));
     }
 
     @Override
