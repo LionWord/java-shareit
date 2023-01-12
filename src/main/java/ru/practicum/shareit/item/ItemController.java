@@ -69,7 +69,7 @@ public class ItemController {
     @GetMapping
     public List<Item> getAllMyItems(@RequestHeader("X-Sharer-User-Id") int userId) {
         List<Item> items = itemService.getAllMyItems(userId);
-        List<BookingDto> bookingDtoOwnerList = bookingService.getAllOwnerBookings(userId, State.ALL);
+        List<BookingDto> bookingDtoOwnerList = bookingService.getAllOwnerBookings(userId, State.ALL.name());
         if (items.isEmpty()) {
             return List.of();
         }
@@ -97,7 +97,7 @@ public class ItemController {
     }
 
     private boolean canPostComments(int userId, int itemId) {
-        BookingDto bookingDto = bookingService.getAllUserBookings(userId, State.ALL).stream()
+        BookingDto bookingDto = bookingService.getAllUserBookings(userId, State.ALL.name()).stream()
                 .filter(bookingDto1 -> bookingDto1.getItem().getId() == itemId)
                 .min(Comparator.comparing(BookingDto::getStart)).orElse(null);
 

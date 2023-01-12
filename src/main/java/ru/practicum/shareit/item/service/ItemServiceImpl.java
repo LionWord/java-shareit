@@ -63,7 +63,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item addDatesAndComments(int userId, Item item) {
         int ownerId = item.getOwnerId();
-        List<BookingDto> bookingDtoListOwner = bookingService.getAllOwnerBookings(ownerId, State.ALL);
+        List<BookingDto> bookingDtoListOwner = bookingService.getAllOwnerBookings(ownerId, State.ALL.name());
         ItemDatesCommentsDto itemDto = ItemDatesCommentsMapper.mapFromItem(item, bookingDtoListOwner);
 
         List<CommentDto> comments = commentRepository.findAll().stream()

@@ -11,6 +11,7 @@ import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.Messages;
+import ru.practicum.shareit.utils.Validators;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -46,7 +47,6 @@ public class BookingController {
         if (bookingService.getBookingInformation(bookingId).getStatus().equals(Status.APPROVED)) {
             throw new AlreadyApprovedException(Messages.ALREADY_APPROVED);
         }
-
         if (approved) {
             return bookingService.approveBookingRequest(bookingId);
         } else {
@@ -71,38 +71,13 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getAllUserBookings(@RequestHeader("X-Sharer-User-Id") int userId,
                                                @RequestParam(name = "state", defaultValue = "ALL", required = false) String state) {
-        if (userService.getUser(userId).isEmpty()) {
-            throw new NoSuchUserException(Messages.NO_SUCH_USER);
-        }
-
-        if (!stateIsValid(state)) {
-            throw new UnsupportedStatusException(Messages.UNKNOWN_STATE + state);
-        }
-
-        return bookingService.getAllUserBookings(userId, State.valueOf(state));
+        return bookingService.getAllUserBookings(userId, state);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getAllOwnerBookings(@RequestHeader("X-Sharer-User-Id") int userId,
                                                 @RequestParam(name = "state", defaultValue = "ALL", required = false) String state) {
-        if (userService.getUser(userId).isEmpty()) {
-            throw new NoSuchUserException(Messages.NO_SUCH_USER);
-        }
-
-        if (!stateIsValid(state)) {
-            throw new UnsupportedStatusException(Messages.UNKNOWN_STATE + state);
-        }
-
-        return bookingService.getAllOwnerBookings(userId, State.valueOf(state));
-    }
-
-    private boolean stateIsValid(String state) {
-        try {
-            State.valueOf(state);
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-        return true;
+        return bookingService.getAllOwnerBookings(userId, state);
     }
 
 }

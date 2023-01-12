@@ -63,24 +63,28 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllUserBookings(int userId, State state) {
+    public List<BookingDto> getAllUserBookings(int userId, String state) {
+        Validators.userPresenceValidator(userId, userRepository);
+        Validators.checkStateValue(state);
         ArrayList<BookingDto> list = new ArrayList<>();
         bookingRepository.findAll().stream()
                 .filter(booking -> booking.getBookerId() == userId)
                 .sorted(Comparator.comparing(Booking::getStart).reversed())
                 .forEach(booking -> list.add(BookingMapperDpa.make(booking, itemRepository)));
-        return filterBookingsByState(list, state);
+        return filterBookingsByState(list, State.valueOf(state));
 
     }
 
     @Override
-    public List<BookingDto> getAllOwnerBookings(int userId, State state) {
+    public List<BookingDto> getAllOwnerBookings(int userId, String state) {
+        Validators.userPresenceValidator(userId, userRepository);
+        Validators.checkStateValue(state);
         ArrayList<BookingDto> list = new ArrayList<>();
         bookingRepository.findAll().stream()
                 .filter(bookingDto -> itemRepository.findById(bookingDto.getItemId()).get().getOwnerId() == userId)
                 .sorted(Comparator.comparing(Booking::getStart).reversed())
                 .forEach(booking -> list.add(BookingMapperDpa.make(booking, itemRepository)));
-        return filterBookingsByState(list, state);
+        return filterBookingsByState(list, State.valueOf(state));
     }
 
     //----------Service methods-----------
