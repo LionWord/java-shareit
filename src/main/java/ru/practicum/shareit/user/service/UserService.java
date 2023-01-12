@@ -14,7 +14,7 @@ public interface UserService {
 
     void deleteUser(int userId);
 
-    Optional<User> getUser(int userId);
+    User getUser(int userId);
 
     List<User> getAllUsers();
 

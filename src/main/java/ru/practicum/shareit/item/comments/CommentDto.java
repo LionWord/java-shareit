@@ -18,7 +18,7 @@ public class CommentDto extends Comment {
         commentDto.setId(comment.getId());
         commentDto.setItemId(comment.getItemId());
         commentDto.setAuthorId(comment.getAuthorId());
-        commentDto.setAuthorName(userService.getUser(comment.getAuthorId()).get().getName());
+        commentDto.setAuthorName(userService.getUser(comment.getAuthorId()).getName());
         commentDto.setCreated(comment.getCreated());
         return commentDto;
     }
