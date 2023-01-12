@@ -28,8 +28,6 @@ import java.util.Optional;
 public class BookingController {
 
     private final BookingService bookingService;
-    private final ItemService itemService;
-    private final UserService userService;
 
     @PostMapping
     public BookingDto createBookingRequest(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody Booking booking) {
@@ -47,13 +45,7 @@ public class BookingController {
     public BookingDto getBookingInformation(@RequestHeader("X-Sharer-User-Id") int userId,
                                                       @PathVariable int bookingId) {
 
-        BookingDto bookingDto = bookingService.getBookingInformation(bookingId);
-        int bookerId = bookingDto.getBooker().getId();
-        int ownerId = itemService.getItem(bookingDto.getItem().getId()).get().getOwnerId();
-        if (userId != bookerId & userId != ownerId) {
-            throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
-        }
-        return bookingDto;
+        return bookingService.getBookingInformation(userId, bookingId);
     }
 
     @GetMapping

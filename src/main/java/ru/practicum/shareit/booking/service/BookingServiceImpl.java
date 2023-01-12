@@ -8,9 +8,11 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exceptions.NoSuchItemException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.utils.Messages;
 import ru.practicum.shareit.utils.Validators;
 
 import java.sql.Timestamp;
@@ -37,7 +39,7 @@ public class BookingServiceImpl implements BookingService {
     }
     @Override
     public BookingDto changeBookingApprovalStatus(int userId, int bookingId, boolean isApproved) {
-        BookingDto booking = getBookingInformation(bookingId);
+        BookingDto booking = getBookingInformation(userId, bookingId);
         int ownerId = itemRepository.findById(booking.getItem().getId()).get().getOwnerId();
         Validators.checkIfUserOwnItem(userId, ownerId);
         Validators.checkBookingApprovedAlready(booking);
@@ -45,25 +47,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDto approveBookingRequest(int bookingId) {
+    public BookingDto getBookingInformation(int userId, int bookingId) {
+        Validators.returnBookingIfPresent(bookingId, bookingRepository);
         Booking booking = Validators.returnBookingIfPresent(bookingId, bookingRepository);
-        booking.setStatus(Status.APPROVED);
-        bookingRepository.save(booking);
-        return BookingMapperDpa.make(booking, itemRepository);
-    }
-
-    @Override
-    public BookingDto rejectBookingRequest(int bookingId) {
-        Booking booking = Validators.returnBookingIfPresent(bookingId, bookingRepository);
-        booking.setStatus(Status.REJECTED);
-        bookingRepository.save(booking);
-        return BookingMapperDpa.make(booking, itemRepository);
-    }
-
-    @Override
-    public BookingDto getBookingInformation(int bookingId) {
-        Booking booking = Validators.returnBookingIfPresent(bookingId, bookingRepository);
-        return BookingMapperDpa.make(booking, itemRepository);
+        BookingDto returnBooking = BookingMapperDpa.make(booking, itemRepository);
+        int bookerId = returnBooking.getBooker().getId();
+        int ownerId = itemRepository.findById(returnBooking.getItem().getId()).get().getOwnerId();
+        Validators.checkIfOwnerOrBooker(userId, bookerId, ownerId);
+        return returnBooking;
     }
 
     @Override
@@ -123,6 +114,20 @@ public class BookingServiceImpl implements BookingService {
         Validators.checkIfItemAvailable(item);
         Validators.checkBookingOwnItem(item.getOwnerId(), userId);
         Validators.checkBookingDates(booking);
+    }
+
+    private BookingDto approveBookingRequest(int bookingId) {
+        Booking booking = Validators.returnBookingIfPresent(bookingId, bookingRepository);
+        booking.setStatus(Status.APPROVED);
+        bookingRepository.save(booking);
+        return BookingMapperDpa.make(booking, itemRepository);
+    }
+
+    private BookingDto rejectBookingRequest(int bookingId) {
+        Booking booking = Validators.returnBookingIfPresent(bookingId, bookingRepository);
+        booking.setStatus(Status.REJECTED);
+        bookingRepository.save(booking);
+        return BookingMapperDpa.make(booking, itemRepository);
     }
 
 }

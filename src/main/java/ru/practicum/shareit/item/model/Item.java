@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -25,10 +26,12 @@ public class Item {
 
     @NotBlank
     @Column(name = "item_name")
+    @Length(max = 64)
     private String name;
 
     @NotNull
     @Column(name = "item_description")
+    @Length(max = 256)
     private String description;
 
     @NotNull

@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.comments;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class Comment {
     @Column(name = "comment_id")
     private int id;
     @Column(name = "comment_text")
+    @Length(max = 256)
     private String text;
     @Column(name = "item_id")
     private int itemId;

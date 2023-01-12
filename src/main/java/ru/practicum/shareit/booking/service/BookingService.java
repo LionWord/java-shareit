@@ -11,11 +11,7 @@ import java.util.Optional;
 public interface BookingService {
     BookingDto createBookingRequest(Booking booking, int bookerId);
 
-    BookingDto approveBookingRequest(int bookingId);
-
-    BookingDto rejectBookingRequest(int bookingId);
-
-    BookingDto getBookingInformation(int bookingId);
+    BookingDto getBookingInformation(int userId, int bookingId);
 
     List<BookingDto> getAllUserBookings(int userId, String state);
 

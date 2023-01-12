@@ -66,6 +66,11 @@ public class Validators {
         }
     }
 
+    public static void checkIfOwnerOrBooker(int userId, int bookerId, int ownerId) {
+        if (userId != bookerId & userId != ownerId) {
+            throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
+        }
+    }
     public static void checkIfUserOwnItem(int userId, int ownerId) {
         if (ownerId != userId) {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
