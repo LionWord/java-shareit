@@ -11,9 +11,9 @@ import java.util.Optional;
 public interface ItemService {
     Item saveItem(int userId, ItemDto item);
 
-    Item editItem(int itemId, ItemDto item);
+    Item editItem(int userId, int itemId, ItemDto item);
 
-    Optional<Item> getItem(int itemId);
+    Item getItem(int itemId);
 
     Item addDatesAndComments(int userId, Item item);
 

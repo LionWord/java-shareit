@@ -14,8 +14,10 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemDatesCommentsMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.Messages;
+import ru.practicum.shareit.utils.Validators;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -32,32 +34,27 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
     private final UserService userService;
     private final BookingService bookingService;
+    private final UserRepository userRepository;
 
     @Override
     public Item saveItem(int userId, ItemDto item) {
+        Validators.userPresenceValidator(userId, userRepository);
         Item itemEntity = itemRepository.itemFromDto(item);
         itemEntity.setOwnerId(userId);
         return itemRepository.save(itemEntity);
     }
 
     @Override
-    public Item editItem(int itemId, ItemDto item) {
-        Item myItem = getItem(itemId).get();
+    public Item editItem(int userId, int itemId, ItemDto item) {
+        Item myItem = Validators.returnItemIfValid(itemId, itemRepository);
+        Validators.checkIfUserOwnItem(userId, myItem.getOwnerId());
         itemRepository.updateItem(item, myItem);
         return itemRepository.save(myItem);
     }
 
     @Override
-    public Optional<Item> getItem(int itemId) {
-        Optional<Item> item = itemRepository.findById(itemId);
-
-        if (item.isEmpty()) {
-            throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
-        }
-
-
-        return item;
-
+    public Item getItem(int itemId) {
+        return itemRepository.findById(itemId).orElseThrow(() -> new NoSuchItemException(Messages.NO_SUCH_ITEM));
     }
 
     @Override
@@ -84,9 +81,16 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getAllMyItems(int userId) {
-        return itemRepository.findAll().stream()
+        List<Item> items = itemRepository.findAll().stream()
                 .filter(item -> item.getOwnerId() == userId)
                 .sorted(Comparator.comparingInt(Item::getId))
+                .collect(Collectors.toList());
+        if (items.isEmpty()) {
+            return List.of();
+        }
+        List<BookingDto> bookingDtoOwnerList = bookingService.getAllOwnerBookings(userId, State.ALL.name());
+        return items.stream()
+                .map(item -> ItemDatesCommentsMapper.mapFromItem(item, bookingDtoOwnerList))
                 .collect(Collectors.toList());
     }
 

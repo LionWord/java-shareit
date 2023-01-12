@@ -39,9 +39,6 @@ public class ItemController {
 
     @PostMapping
     public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody ItemDto item) {
-        if (userService.getUser(userId).isEmpty()) {
-            throw new NoSuchUserException(Messages.NO_SUCH_USER);
-        }
         return itemService.saveItem(userId, item);
     }
 
@@ -49,33 +46,17 @@ public class ItemController {
     public Item editItem(@RequestHeader("X-Sharer-User-Id") int userId,
                          @PathVariable int itemId,
                          @RequestBody ItemDto item) {
-        int itemOwnerId = itemService.getItem(itemId).get().getOwnerId();
-        if (itemOwnerId != userId) {
-            throw new NoSuchUserException(Messages.NO_SUCH_USER);
-        }
-        return itemService.editItem(itemId, item);
+        return itemService.editItem(userId, itemId, item);
     }
 
     @GetMapping("/{itemId}")
-    public Optional<Item> getItem(@RequestHeader("X-Sharer-User-Id") int userId, @PathVariable int itemId) {
-        Optional<Item> item = itemService.getItem(itemId);
-        if (item.isEmpty()) {
-            throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
-        }
-
-        return Optional.of(itemService.addDatesAndComments(userId, item.get()));
+    public Item getItem(@RequestHeader("X-Sharer-User-Id") int userId, @PathVariable int itemId) {
+        return itemService.addDatesAndComments(userId, itemService.getItem(itemId));
     }
 
     @GetMapping
     public List<Item> getAllMyItems(@RequestHeader("X-Sharer-User-Id") int userId) {
-        List<Item> items = itemService.getAllMyItems(userId);
-        List<BookingDto> bookingDtoOwnerList = bookingService.getAllOwnerBookings(userId, State.ALL.name());
-        if (items.isEmpty()) {
-            return List.of();
-        }
-        return items.stream()
-                .map(item -> ItemDatesCommentsMapper.mapFromItem(item, bookingDtoOwnerList))
-                .collect(Collectors.toList());
+        return itemService.getAllMyItems(userId);
     }
 
     @GetMapping("/search")
