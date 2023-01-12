@@ -41,24 +41,18 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto approveBookingRequest(int bookingId) {
-        Optional<Booking> booking = bookingRepository.findById(bookingId);
-        if (booking.isEmpty()) {
-            throw new NoSuchBookingException(Messages.NO_SUCH_BOOKING);
-        }
-        booking.get().setStatus(Status.APPROVED);
-        bookingRepository.save(booking.get());
-        return BookingMapperDpa.make(booking.get(), itemRepository);
+        Booking booking = returnBookingIfPresent(bookingId);
+        booking.setStatus(Status.APPROVED);
+        bookingRepository.save(booking);
+        return BookingMapperDpa.make(booking, itemRepository);
     }
 
     @Override
     public BookingDto rejectBookingRequest(int bookingId) {
-        Optional<Booking> booking = bookingRepository.findById(bookingId);
-        if (booking.isEmpty()) {
-            throw new NoSuchBookingException(Messages.NO_SUCH_BOOKING);
-        }
-        booking.get().setStatus(Status.REJECTED);
-        bookingRepository.save(booking.get());
-        return BookingMapperDpa.make(booking.get(), itemRepository);
+        Booking booking = returnBookingIfPresent(bookingId);
+        booking.setStatus(Status.REJECTED);
+        bookingRepository.save(booking);
+        return BookingMapperDpa.make(booking, itemRepository);
     }
 
     @Override
@@ -88,6 +82,8 @@ public class BookingServiceImpl implements BookingService {
         return filterBookingsByState(list, state);
     }
 
+    //----------Private service methods and validators-----------
+
     private List<BookingDto> filterBookingsByState(List<BookingDto> list, State state) {
         switch (state) {
             case WAITING:
@@ -112,31 +108,38 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-
     private Item returnItemIfValid(int itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
         return item.orElseThrow(() -> new NoSuchItemException(Messages.NO_SUCH_ITEM));
     }
+
     private void checkIfAvailable(Item item) {
         if (!item.getAvailable()) {
             throw new NotAvailableException(Messages.NOT_AVAILABLE);
         }
     }
+
     private void checkIfNotOwner(int ownerId, int userId) {
         if (ownerId == userId) {
             throw new BookingSelfOwnedItemException(Messages.SELF_OWNED_ITEM);
         }
     }
+
     private void bookingValidationSequence(int userId, int itemId, Booking booking) {
         Item item = returnItemIfValid(itemId);
-        userValidator(userId);
+        userPresenceValidator(userId);
         checkIfAvailable(item);
         checkIfNotOwner(item.getOwnerId(), userId);
         timestampIsCorrect(booking);
     }
 
-    private void userValidator(int userId) {
+    private void userPresenceValidator(int userId) {
         userRepository.findById(userId).orElseThrow(() -> new NoSuchUserException(Messages.NO_SUCH_USER));
+    }
+
+    private Booking returnBookingIfPresent(int bookingId) {
+        return bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new NoSuchBookingException(Messages.NO_SUCH_BOOKING));
     }
 
     private void timestampIsCorrect(Booking booking) {

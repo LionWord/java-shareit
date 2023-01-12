@@ -32,24 +32,6 @@ public class BookingController {
 
     @PostMapping
     public BookingDto createBookingRequest(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody Booking booking) {
-        /*if (userService.getUser(userId).isEmpty()) {
-            throw new NoSuchUserException(Messages.NO_SUCH_USER);
-        }
-        if (itemService.getItem(booking.getItemId()).isEmpty()) {
-            throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
-        }
-
-        if (itemService.getItem(booking.getItemId()).get().getOwnerId() == userId) {
-            throw new BookingSelfOwnedItemException(Messages.SELF_OWNED_ITEM);
-        }
-        if (!itemService.getItem(booking.getItemId()).get().getAvailable()) {
-            throw new NotAvailableException(Messages.NOT_AVAILABLE);
-        }
-        if (!timestampIsCorrect(booking)) {
-            throw new WrongTimestampException(Messages.WRONG_TIMESTAMP);
-        }*/
-
-
         return bookingService.createBookingRequest(booking, userId);
     }
 
