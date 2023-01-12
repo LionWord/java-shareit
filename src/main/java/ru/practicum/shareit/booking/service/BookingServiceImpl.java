@@ -12,7 +12,8 @@ import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
-import ru.practicum.shareit.user.utils.Messages;
+import ru.practicum.shareit.utils.Messages;
+import ru.practicum.shareit.utils.Validators;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -41,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto approveBookingRequest(int bookingId) {
-        Booking booking = returnBookingIfPresent(bookingId);
+        Booking booking = Validators.returnBookingIfPresent(bookingId, bookingRepository);
         booking.setStatus(Status.APPROVED);
         bookingRepository.save(booking);
         return BookingMapperDpa.make(booking, itemRepository);
@@ -49,16 +50,16 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto rejectBookingRequest(int bookingId) {
-        Booking booking = returnBookingIfPresent(bookingId);
+        Booking booking = Validators.returnBookingIfPresent(bookingId, bookingRepository);
         booking.setStatus(Status.REJECTED);
         bookingRepository.save(booking);
         return BookingMapperDpa.make(booking, itemRepository);
     }
 
     @Override
-    public Optional<BookingDto> getBookingInformation(int bookingId) {
-        Optional<Booking> booking = bookingRepository.findById(bookingId);
-        return booking.map(value -> BookingMapperDpa.make(value, itemRepository));
+    public BookingDto getBookingInformation(int bookingId) {
+        Booking booking = Validators.returnBookingIfPresent(bookingId, bookingRepository);
+        return BookingMapperDpa.make(booking, itemRepository);
     }
 
     @Override
@@ -82,7 +83,7 @@ public class BookingServiceImpl implements BookingService {
         return filterBookingsByState(list, state);
     }
 
-    //----------Private service methods and validators-----------
+    //----------Service methods-----------
 
     private List<BookingDto> filterBookingsByState(List<BookingDto> list, State state) {
         switch (state) {
@@ -126,11 +127,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private void bookingValidationSequence(int userId, int itemId, Booking booking) {
-        Item item = returnItemIfValid(itemId);
-        userPresenceValidator(userId);
-        checkIfAvailable(item);
-        checkIfNotOwner(item.getOwnerId(), userId);
-        timestampIsCorrect(booking);
+        Item item = Validators.returnItemIfValid(itemId, itemRepository);
+        Validators.userPresenceValidator(userId, userRepository);
+        Validators.checkIfItemAvailable(item);
+        Validators.checkIfUserIsOwner(item.getOwnerId(), userId);
+        Validators.checkBookingDates(booking);
     }
 
     private void userPresenceValidator(int userId) {

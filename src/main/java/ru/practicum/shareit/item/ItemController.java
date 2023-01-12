@@ -16,7 +16,7 @@ import ru.practicum.shareit.item.mapper.ItemDatesCommentsMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.user.utils.Messages;
+import ru.practicum.shareit.utils.Messages;
 
 import java.sql.Timestamp;
 import java.time.Instant;

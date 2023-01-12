@@ -10,7 +10,7 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.user.utils.Messages;
+import ru.practicum.shareit.utils.Messages;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -39,11 +39,11 @@ public class BookingController {
     public BookingDto approveBookingRequest(@RequestHeader("X-Sharer-User-Id") int ownerId,
                                             @PathVariable int bookingId,
                                             @RequestParam(name = "approved") boolean approved) {
-        int itemId = bookingService.getBookingInformation(bookingId).get().getItem().getId();
+        int itemId = bookingService.getBookingInformation(bookingId).getItem().getId();
         if (itemService.getItem(itemId).get().getOwnerId() != ownerId) {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
-        if (bookingService.getBookingInformation(bookingId).get().getStatus().equals(Status.APPROVED)) {
+        if (bookingService.getBookingInformation(bookingId).getStatus().equals(Status.APPROVED)) {
             throw new AlreadyApprovedException(Messages.ALREADY_APPROVED);
         }
 
@@ -56,15 +56,12 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public Optional<BookingDto> getBookingInformation(@RequestHeader("X-Sharer-User-Id") int userId,
+    public BookingDto getBookingInformation(@RequestHeader("X-Sharer-User-Id") int userId,
                                                       @PathVariable int bookingId) {
 
-        Optional<BookingDto> bookingDto = bookingService.getBookingInformation(bookingId);
-        if (bookingDto.isEmpty()) {
-            throw new NoSuchBookingException(Messages.NO_SUCH_BOOKING);
-        }
-        int bookerId = bookingDto.get().getBooker().getId();
-        int ownerId = itemService.getItem(bookingDto.get().getItem().getId()).get().getOwnerId();
+        BookingDto bookingDto = bookingService.getBookingInformation(bookingId);
+        int bookerId = bookingDto.getBooker().getId();
+        int ownerId = itemService.getItem(bookingDto.getItem().getId()).get().getOwnerId();
         if (userId != bookerId & userId != ownerId) {
             throw new NoSuchItemException(Messages.NO_SUCH_ITEM);
         }
@@ -97,15 +94,6 @@ public class BookingController {
         }
 
         return bookingService.getAllOwnerBookings(userId, State.valueOf(state));
-    }
-
-    private boolean timestampIsCorrect(Booking booking) {
-        LocalDateTime start = booking.getStart();
-        LocalDateTime end = booking.getEnd();
-        LocalDateTime now = Timestamp.from(Instant.now()).toLocalDateTime();
-        return !end.isBefore(start)
-                && !start.isBefore(now)
-                && !start.isAfter(end);
     }
 
     private boolean stateIsValid(String state) {

@@ -15,7 +15,7 @@ public interface BookingService {
 
     BookingDto rejectBookingRequest(int bookingId);
 
-    Optional<BookingDto> getBookingInformation(int bookingId);
+    BookingDto getBookingInformation(int bookingId);
 
     List<BookingDto> getAllUserBookings(int userId, State state);
 
