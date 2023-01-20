@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface UserService {
 
-    User addUser(UserDto userDto);
+    User saveUser(UserDto user);
 
-    User editUser(int userId, UserDto userDto);
+    User modifyUser(int userId, UserDto user);
 
     void deleteUser(int userId);
 
@@ -17,7 +17,4 @@ public interface UserService {
 
     List<User> getAllUsers();
 
-    boolean emailIsPresent(String email);
-
-    boolean idIsPresent(int userId);
 }
