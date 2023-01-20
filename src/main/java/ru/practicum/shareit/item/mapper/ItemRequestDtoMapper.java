@@ -6,7 +6,7 @@ import ru.practicum.shareit.item.model.Item;
 public class ItemRequestDtoMapper {
 
     public static ItemWithRequestDto mapToDto(Item item, int requestId) {
-        return ItemWithRequestDto.builder()
+        return ItemWithRequestDto.childBuilder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())

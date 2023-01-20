@@ -15,6 +15,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemDatesCommentsMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.RequestRepository;
+import ru.practicum.shareit.response.ResponseService;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.Messages;
@@ -35,13 +37,18 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final BookingService bookingService;
     private final UserRepository userRepository;
+    private final ResponseService responseService;
 
     @Override
     public Item saveItem(int userId, ItemDto item) {
         Validators.userPresenceValidator(userId, userRepository);
         Item itemEntity = itemRepository.itemFromDto(item);
         itemEntity.setOwnerId(userId);
-        return itemRepository.save(itemEntity);
+        itemEntity = itemRepository.save(itemEntity);
+        if (item.getRequestId() != null) {
+            responseService.addResponse(item.getRequestId(), itemEntity.getId());
+        }
+        return itemEntity;
     }
 
     @Override

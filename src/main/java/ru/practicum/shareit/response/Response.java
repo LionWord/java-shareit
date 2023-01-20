@@ -1,12 +1,17 @@
 package ru.practicum.shareit.response;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(access = AccessLevel.PUBLIC)
 @Entity
 @Table(name = "responses")
+
 public class Response {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

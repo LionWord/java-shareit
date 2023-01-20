@@ -22,7 +22,8 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody ItemDto item) {
+    public Item addItem(@RequestHeader("X-Sharer-User-Id") int userId,
+                        @RequestBody ItemDto item) {
         return itemService.saveItem(userId, item);
     }
 

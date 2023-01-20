@@ -1,18 +1,13 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.*;
-import org.springframework.stereotype.Service;
 
-@Getter
-@Setter
 public class ItemWithRequestDto extends ItemDto{
     private int id;
-    private int requestId;
 
-    @Builder
+    @Builder(access = AccessLevel.PUBLIC, builderMethodName = "childBuilder")
     ItemWithRequestDto(String name, String description, Boolean available, int requestId, int id) {
-        super(name, description, available);
-        this.requestId = requestId;
+        super(name, description, available, requestId);
         this.id = id;
     }
 }
