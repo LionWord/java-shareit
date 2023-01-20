@@ -9,6 +9,7 @@ public class Messages {
     public static final String NO_SUCH_USER = "No such user";
     public static final String NO_SUCH_ITEM = "No such item";
     public static final String NO_SUCH_BOOKING = "No such booking";
+    public static final String NO_SUCH_REQUEST = "No such request";
     public static final String NOT_AVAILABLE = "Item is not available";
     public static final String WRONG_TIMESTAMP = "Wrong start or end booking params";
     public static final String ALREADY_APPROVED = "Booking was already approved";
