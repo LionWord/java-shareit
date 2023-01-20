@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface RequestService {
 
-    RequestDto addRequest(int userId, RequestDto requestDto);
+    Request addRequest(int userId, Request requestDto);
 
     List<RequestDto> getMyRequests(int userId);
 

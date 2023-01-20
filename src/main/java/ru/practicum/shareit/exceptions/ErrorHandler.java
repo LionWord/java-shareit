@@ -22,7 +22,8 @@ public class ErrorHandler {
             ConstraintViolationException.class,
             AlreadyApprovedException.class,
             EmptyCommentException.class,
-            CantCommentException.class})
+            CantCommentException.class,
+            EmptyRequestException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionMessage handleRuntimeException(RuntimeException e) {
         log.debug("Throwing " + e.getClass().getName() + "Message: " + e.getMessage());

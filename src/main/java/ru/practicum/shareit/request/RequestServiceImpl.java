@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.utils.Validators;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -14,11 +15,13 @@ public class RequestServiceImpl implements RequestService{
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
     @Override
-    public RequestDto addRequest(int userId, RequestDto requestDto) {
+    public Request addRequest(int userId, Request request) {
         Validators.userPresenceValidator(userId, userRepository);
-        return null;
+        Validators.checkIfRequestIsNotEmpty(request);
+        LocalDateTime now = LocalDateTime.now();
+        request.setCreated(now);
+        return requestRepository.save(request);
     }
-
     @Override
     public List<RequestDto> getMyRequests(int userId) {
         Validators.userPresenceValidator(userId, userRepository);

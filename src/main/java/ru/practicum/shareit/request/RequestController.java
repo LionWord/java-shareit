@@ -12,9 +12,9 @@ public class RequestController {
     private final RequestService requestService;
 
     @PostMapping
-    public RequestDto addRequest(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody RequestDto requestDto) {
+    public Request addRequest(@RequestHeader("X-Sharer-User-Id") int userId, @RequestBody Request request) {
         //stub
-        return null;
+        return requestService.addRequest(userId, request);
     }
 
     @GetMapping
