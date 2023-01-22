@@ -8,8 +8,8 @@ public interface RequestService {
 
     List<RequestWithResponsesDto> getMyRequests(int userId);
 
-    public RequestWithResponsesDto getRequest(int userId, int requestId);
+    RequestWithResponsesDto getRequest(int userId, int requestId);
 
-    public List<RequestWithResponsesDto> getAllRequests(int userId);
+    List<RequestWithResponsesDto> getAllRequests(int userId, int from, int size);
 
 }

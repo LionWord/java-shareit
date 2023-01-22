@@ -18,4 +18,5 @@ public class Messages {
     public static final String EMPTY_COMMENT = "Comment can't be empty";
     public static final String ITEM_WAS_NOT_USED = "Can't post comments about item that was not used by user";
     public static final String EMPTY_REQUEST = "Request can't be empty";
+    public static final String INVALID_PAGINATION = "Invalid pagination params";
 }

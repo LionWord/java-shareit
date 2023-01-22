@@ -107,4 +107,12 @@ public class Validators {
                 .orElseThrow(() -> new NoSuchRequestException(Messages.NO_SUCH_REQUEST));
     }
 
+    public static void checkPagination(int from, int size) {
+        if ((from == 0 & size == 0)
+                | from < 0
+                | size < 1) {
+            throw new InvalidPaginationException(Messages.INVALID_PAGINATION);
+        }
+    }
+
 }

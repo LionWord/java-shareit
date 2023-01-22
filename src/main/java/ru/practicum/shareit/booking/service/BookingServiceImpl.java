@@ -1,6 +1,10 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.mapper.BookingMapperDpa;
@@ -70,13 +74,45 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public List<BookingDto> getAllUserBookings(int userId, String state, Integer from, Integer size) {
+        if (from == null & size == null) {
+            return getAllUserBookings(userId, state);
+        }
+        Validators.checkPagination(from, size);
+        ArrayList<BookingDto> list = new ArrayList<>();
+        Page<Booking> page = bookingRepository.findAllByBookerIdOrderByStartDesc(userId, PageRequest.of(from, size));
+        while (page.isEmpty()) {
+            from -= 1;
+            page = bookingRepository.findAllByBookerIdOrderByStartDesc(userId, PageRequest.of(from, size));
+        }
+        page.stream()
+                .forEach(booking -> list.add(BookingMapperDpa.make(booking, itemRepository)));
+        return filterBookingsByState(list, State.valueOf(state));
+    }
+
+    @Override
     public List<BookingDto> getAllOwnerBookings(int userId, String state) {
         Validators.userPresenceValidator(userId, userRepository);
         Validators.checkStateValue(state);
         ArrayList<BookingDto> list = new ArrayList<>();
         bookingRepository.findAll().stream()
-                .filter(bookingDto -> itemRepository.findById(bookingDto.getItemId()).get().getOwnerId() == userId)
+                .filter(booking -> itemRepository.findById(booking.getItemId()).get().getOwnerId() == userId)
                 .sorted(Comparator.comparing(Booking::getStart).reversed())
+                .forEach(booking -> list.add(BookingMapperDpa.make(booking, itemRepository)));
+        return filterBookingsByState(list, State.valueOf(state));
+    }
+    public List<BookingDto> getAllOwnerBookings(int userId, String state, Integer from, Integer size) {
+        if (from == null & size == null) {
+            return getAllOwnerBookings(userId, state);
+        }
+        Validators.checkPagination(from, size);
+        ArrayList<BookingDto> list = new ArrayList<>();
+        Page<Booking> page = bookingRepository.findAllOwnerBookings(userId, PageRequest.of(from, size));
+        while (page.isEmpty()) {
+            from -= 1;
+            page = bookingRepository.findAllOwnerBookings(userId, PageRequest.of(from, size));
+        }
+        page.stream()
                 .forEach(booking -> list.add(BookingMapperDpa.make(booking, itemRepository)));
         return filterBookingsByState(list, State.valueOf(state));
     }
