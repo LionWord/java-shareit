@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.item.mapper.ItemMapperDpa;
@@ -9,10 +11,13 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Integer>, ItemMapperDpa {
-    List<Item> findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(@NotNull String description, @NotNull String name);
+    Page<Item> findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(@NotNull String description,
+                                                                              @NotNull String name,
+                                                                              Pageable pageable);
     @Query(nativeQuery = true,
             value = "select * from items i " +
             "left join responses r on r.item_id=i.item_id " +
                     "where r.request_id = ?1")
     List<Item> findAllByRequestId(int requestId);
+    Page<Item> findAllByOwnerIdOrderByIdAsc(int userId, Pageable pageable);
 }
