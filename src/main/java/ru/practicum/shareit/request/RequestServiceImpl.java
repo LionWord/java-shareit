@@ -1,6 +1,7 @@
 package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemWithRequestDto;
@@ -50,10 +51,15 @@ public class RequestServiceImpl implements RequestService{
     }
 
     @Override
-    public List<RequestWithResponsesDto> getAllRequests(int userId, int from, int size) {
-        Validators.userPresenceValidator(userId, userRepository);
-        //PageRequest.of()
-        return null;
+    public List<RequestWithResponsesDto> getAllRequests(int userId, Integer from, Integer size) {
+        if (from == null & size == null) {
+            return List.of();
+        }
+        Validators.checkPagination(from,size);
+        Page<Request> page = requestRepository.findAllOrderByCreated(userId, PageRequest.of(from, size));
+        return page.stream()
+                .map(this::connectRequestWithItem)
+                .collect(Collectors.toList());
     }
 
     private RequestWithResponsesDto connectRequestWithItem(Request request) {

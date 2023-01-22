@@ -35,7 +35,8 @@ public class ErrorHandler {
             NoSuchItemException.class,
             NoSuchBookingException.class,
             WrongUserIdException.class,
-            BookingSelfOwnedItemException.class})
+            BookingSelfOwnedItemException.class,
+            NoSuchRequestException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ExceptionMessage handleNotFoundException(RuntimeException e) {
         log.debug("Throwing " + e.getClass().getName() + "Message: " + e.getMessage());

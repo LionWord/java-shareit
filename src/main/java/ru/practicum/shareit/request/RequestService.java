@@ -10,6 +10,6 @@ public interface RequestService {
 
     RequestWithResponsesDto getRequest(int userId, int requestId);
 
-    List<RequestWithResponsesDto> getAllRequests(int userId, int from, int size);
+    List<RequestWithResponsesDto> getAllRequests(int userId, Integer from, Integer size);
 
 }
