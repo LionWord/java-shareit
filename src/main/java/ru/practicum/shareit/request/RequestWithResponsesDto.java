@@ -14,6 +14,6 @@ public class RequestWithResponsesDto {
     private Integer id;
     private String description;
     private LocalDateTime created;
-    private List<ItemWithRequestDto> responseItems;
+    private List<ItemWithRequestDto> items;
 
 }

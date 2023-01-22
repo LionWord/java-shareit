@@ -1,12 +1,13 @@
 package ru.practicum.shareit.response;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.request.RequestRepository;
 import ru.practicum.shareit.utils.Validators;
 
-@Data
 @Service
+@RequiredArgsConstructor
 public class ResponseServiceImpl implements ResponseService{
     private final ResponseRepository responseRepository;
     private final RequestRepository requestRepository;

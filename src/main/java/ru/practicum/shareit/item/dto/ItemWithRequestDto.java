@@ -1,7 +1,8 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.*;
-
+@Getter
+@Setter
 public class ItemWithRequestDto extends ItemDto{
     private int id;
 

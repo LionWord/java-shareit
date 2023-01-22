@@ -16,11 +16,16 @@ public class Request {
     @Column(name = "request_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(name = "request_text")
     @NotBlank
     @NotEmpty
     private String description;
+
     @Column(name = "request_created")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-DD'T'HH:mm:ss")
     private LocalDateTime created;
+
+    @Column(name = "requester_id")
+    private int requesterId;
 }

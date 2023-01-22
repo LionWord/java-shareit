@@ -98,7 +98,7 @@ public class Validators {
     public static void checkIfRequestIsNotEmpty(Request request) {
         String description = request.getDescription();
         if (description == null || description.isEmpty() || description.isBlank()) {
-
+            throw new EmptyRequestException(Messages.EMPTY_REQUEST);
         }
     }
 

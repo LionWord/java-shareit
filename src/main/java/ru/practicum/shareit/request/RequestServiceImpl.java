@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.utils.Validators;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,12 +26,16 @@ public class RequestServiceImpl implements RequestService{
         Validators.checkIfRequestIsNotEmpty(request);
         LocalDateTime now = LocalDateTime.now();
         request.setCreated(now);
+        request.setRequesterId(userId);
         return requestRepository.save(request);
     }
     @Override
     public List<RequestWithResponsesDto> getMyRequests(int userId) {
         Validators.userPresenceValidator(userId, userRepository);
-        return null;
+        List<Request> myRequests = requestRepository.findAllByRequesterIdOrderByCreatedDesc(userId);
+        List<RequestWithResponsesDto> result = new ArrayList<>();
+        myRequests.forEach(request -> result.add(connectRequestWithItem(request)));
+        return result;
     }
 
     @Override
@@ -47,5 +52,12 @@ public class RequestServiceImpl implements RequestService{
     public List<RequestWithResponsesDto> getAllRequests(int userId) {
         Validators.userPresenceValidator(userId, userRepository);
         return null;
+    }
+
+    private RequestWithResponsesDto connectRequestWithItem(Request request) {
+        List<ItemWithRequestDto> items = itemRepository.findAllByRequestId(request.getId()).stream()
+                .map(item -> ItemRequestDtoMapper.mapToDto(item, request.getId()))
+                .collect(Collectors.toList());
+        return RequestMapper.mapToDto(request, items);
     }
 }

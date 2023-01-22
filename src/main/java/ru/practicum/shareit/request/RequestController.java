@@ -18,8 +18,7 @@ public class RequestController {
 
     @GetMapping
     public List<RequestWithResponsesDto> getMyRequests(@RequestHeader("X-Sharer-User-Id") int userId) {
-        //stub
-        return null;
+        return requestService.getMyRequests(userId);
     }
 
     @GetMapping(path = "{requestId}")
