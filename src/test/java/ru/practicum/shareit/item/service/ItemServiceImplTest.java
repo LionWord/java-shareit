@@ -3,6 +3,8 @@ package ru.practicum.shareit.item.service;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.*;
@@ -10,19 +12,16 @@ import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.NoSuchItemException;
-import ru.practicum.shareit.exceptions.NoSuchUserException;
 import ru.practicum.shareit.item.comments.CommentRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.response.ResponseService;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.utils.Validators;
 
 import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
@@ -38,17 +37,43 @@ class ItemServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private ResponseService responseService;
-
+    @Captor
+    private ArgumentCaptor<Item> itemCaptor = ArgumentCaptor.forClass(Item.class);
+    @Captor
+    private ArgumentCaptor<ItemDto> itemDtoCaptor = ArgumentCaptor.forClass(ItemDto.class);
     @InjectMocks
     private ItemServiceImpl itemService;
 
     @Test
-    void saveItem() {
-
+    void saveItem_returnItem() {
+        int userId = 0;
+        ItemDto item = ItemDto.builder().build();
+        Item expected = new Item();
+        when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
+        when(itemRepository.itemFromDto(item)).thenReturn(new Item());
+        when(itemRepository.save(any(Item.class))).thenReturn(new Item());
+        assertEquals(expected, itemService.saveItem(userId, item));
+        verify(itemRepository, atLeastOnce()).save(any(Item.class));
     }
 
     @Test
-    void editItem() {
+    void editItem_setDescriptionToUpdated() {
+        /*int userId = 0;
+        int itemId = 0;
+
+        Item validationItem = new Item();
+        validationItem.setOwnerId(userId);
+        validationItem.setId(itemId);
+        User validationUser = new User();
+        validationUser.setId(userId);
+        ItemDto item = ItemDto.builder()
+                .description("updated")
+                .build();
+        when(itemRepository.findById(itemId)).thenReturn(Optional.of(validationItem));
+        assertEquals("updated", itemService.editItem(userId, itemId, item).getDescription());
+        verify(itemRepository).updateItem(itemDtoCaptor.capture(), itemCaptor.capture());
+        assertEquals(item, itemDtoCaptor.getValue());
+        assertEquals(new Item(), itemCaptor.getValue());*/
     }
 
     @Test
