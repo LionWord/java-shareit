@@ -150,10 +150,6 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void searchItem() {
-    }
-
-    @Test
     void testSearchItem_returnEmptyList_ifQueryIsEmpty() {
         assertEquals(List.of(), itemService.searchItem(""));
     }
