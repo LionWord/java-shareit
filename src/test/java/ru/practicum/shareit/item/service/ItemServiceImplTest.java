@@ -1,18 +1,27 @@
 package ru.practicum.shareit.item.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
+
 import static org.mockito.Mockito.*;
 
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.model.Booker;
+import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.NoSuchItemException;
+import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentRepository;
+import ru.practicum.shareit.item.dto.ItemBookingDto;
+import ru.practicum.shareit.item.dto.ItemDatesCommentsDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -20,7 +29,10 @@ import ru.practicum.shareit.response.ResponseService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.utils.Validators;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,22 +70,20 @@ class ItemServiceImplTest {
 
     @Test
     void editItem_setDescriptionToUpdated() {
-        /*int userId = 0;
         int itemId = 0;
-
-        Item validationItem = new Item();
-        validationItem.setOwnerId(userId);
-        validationItem.setId(itemId);
-        User validationUser = new User();
-        validationUser.setId(userId);
-        ItemDto item = ItemDto.builder()
-                .description("updated")
-                .build();
-        when(itemRepository.findById(itemId)).thenReturn(Optional.of(validationItem));
-        assertEquals("updated", itemService.editItem(userId, itemId, item).getDescription());
-        verify(itemRepository).updateItem(itemDtoCaptor.capture(), itemCaptor.capture());
-        assertEquals(item, itemDtoCaptor.getValue());
-        assertEquals(new Item(), itemCaptor.getValue());*/
+        int userId = 0;
+        Item item = new Item();
+        item.setOwnerId(userId);
+        ItemDto updateItem = ItemDto.builder()
+                        .description("update")
+                                .build();
+        InOrder order = inOrder(itemRepository);
+        when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
+        itemService.editItem(userId, itemId, updateItem);
+        verify(itemRepository).updateItem(itemDtoCaptor.capture(), any(Item.class));
+        assertEquals("update", itemDtoCaptor.getValue().getDescription());
+        order.verify(itemRepository).updateItem(any(), any());
+        order.verify(itemRepository).save(any());
     }
 
     @Test
@@ -93,15 +103,61 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void addDatesAndComments() {
+    void addDatesAndComments_checkCommentAuthorName_checkBookingsArePresent() {
+        int userId = 0;
+        int itemId = 0;
+        Item item = new Item();
+        item.setOwnerId(userId);
+        item.setId(itemId);
+        BookingDto bookingDto = new BookingDto();
+        bookingDto.setStart(LocalDateTime.MIN);
+        bookingDto.setEnd(LocalDateTime.MAX);
+        bookingDto.setItem(new ItemBookingDto(itemId, "booking"));
+        bookingDto.setBooker(new Booker(userId));
+        Comment comment = new Comment();
+        comment.setItemId(itemId);
+        comment.setText("test");
+        comment.setCreated(LocalDateTime.now());
+        comment.setAuthorId(userId);
+        User user = new User();
+        user.setName("name");
+        when(commentRepository.findAll()).thenReturn(List.of(comment));
+        when(bookingService.getAllOwnerBookings(userId, State.ALL.name())).thenReturn(List.of(bookingDto));
+        when(userService.getUser(anyInt())).thenReturn(user);
+        ItemDatesCommentsDto value = itemService.addDatesAndComments(userId, item);
+        assertEquals("name", value.getComments().get(0).getAuthorName());
+        assertNotNull(value.getLastBooking());
+        assertNotNull(value.getNextBooking());
     }
 
     @Test
-    void getAllMyItems() {
+    void getAllMyItems_returnListOfOneItem() {
+        int userId = 0;
+        Item item = new Item();
+        item.setOwnerId(userId);
+        when(itemRepository.findAll()).thenReturn(List.of(item));
+        assertEquals(1, itemService.getAllMyItems(userId).size());
     }
 
     @Test
-    void testGetAllMyItems() {
+    void getAllMyItems_returnEmptyListIfItemsNotFound() {
+        int userId = 0;
+        Item item = new Item();
+        item.setOwnerId(userId);
+        when(itemRepository.findAll()).thenReturn(List.of());
+        assertEquals(List.of(), itemService.getAllMyItems(userId));
+    }
+
+    @Test
+    void getAllMyItems_getWithPagination() {
+        int userId = 0;
+        int from = 0;
+        int size = 1;
+        Item itemOne = new Item();
+        itemOne.setOwnerId(userId);
+        when(itemRepository.findAllByOwnerIdOrderByIdAsc(userId, PageRequest.of(from, size)))
+                .thenReturn(new PageImpl<>(List.of(itemOne)));
+        assertEquals(List.of(itemOne), itemService.getAllMyItems(userId, from, size));
     }
 
     @Test
@@ -109,7 +165,8 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void testSearchItem() {
+    void testSearchItem_returnEmptyList_ifQueryIsEmpty() {
+        assertEquals(List.of(), itemService.searchItem(""));
     }
 
     @Test

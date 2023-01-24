@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
@@ -67,11 +68,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item addDatesAndComments(int userId, Item item) {
+    public ItemDatesCommentsDto addDatesAndComments(int userId, Item item) {
         int ownerId = item.getOwnerId();
         List<BookingDto> bookingDtoListOwner = bookingService.getAllOwnerBookings(ownerId, State.ALL.name());
         ItemDatesCommentsDto itemDto = ItemDatesCommentsMapper.mapFromItem(item, bookingDtoListOwner);
-
         List<CommentDto> comments = commentRepository.findAll().stream()
                 .filter(comment -> comment.getItemId() == item.getId())
                 .map(comment -> CommentDto.mapToDto(comment, userService))

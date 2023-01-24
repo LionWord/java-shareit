@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDatesCommentsDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
@@ -35,7 +36,7 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public Item getItem(@RequestHeader("X-Sharer-User-Id") int userId, @PathVariable int itemId) {
+    public ItemDatesCommentsDto getItem(@RequestHeader("X-Sharer-User-Id") int userId, @PathVariable int itemId) {
         return itemService.addDatesAndComments(userId, itemService.getItem(itemId));
     }
 
