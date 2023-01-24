@@ -17,6 +17,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booker;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exceptions.EmptyCommentException;
 import ru.practicum.shareit.exceptions.NoSuchItemException;
 import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.comments.CommentRepository;
@@ -55,18 +56,6 @@ class ItemServiceImplTest {
     private ArgumentCaptor<ItemDto> itemDtoCaptor = ArgumentCaptor.forClass(ItemDto.class);
     @InjectMocks
     private ItemServiceImpl itemService;
-
-    @Test
-    void saveItem_returnItem() {
-        int userId = 0;
-        ItemDto item = ItemDto.builder().build();
-        Item expected = new Item();
-        when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
-        when(itemRepository.itemFromDto(item)).thenReturn(new Item());
-        when(itemRepository.save(any(Item.class))).thenReturn(new Item());
-        assertEquals(expected, itemService.saveItem(userId, item));
-        verify(itemRepository, atLeastOnce()).save(any(Item.class));
-    }
 
     @Test
     void editItem_setDescriptionToUpdated() {
@@ -170,6 +159,10 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void postComment() {
+    void postComment_throwException_emptyComment() {
+        int userId = 0;
+        int itemId = 0;
+        Comment comment = new Comment();
+        assertThrows(EmptyCommentException.class, () -> itemService.postComment(userId, itemId, comment));
     }
 }

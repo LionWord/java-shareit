@@ -155,7 +155,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public CommentDto postComment(int userId, int itemId, Comment comment) {
-        if (comment.getText().isEmpty()) {
+        if (comment.getText() == null || comment.getText().isEmpty()) {
             throw new EmptyCommentException(Messages.EMPTY_COMMENT);
         }
         Validators.checkIfCanPostComments(userId, itemId, bookingService);
