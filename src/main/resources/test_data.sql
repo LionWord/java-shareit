@@ -5,4 +5,4 @@ INSERT INTO items (item_name, item_description, item_is_available, owner_id, req
 values ('drill', 'super drill', true, 1, 0);
 
 INSERT INTO bookings(start_date, end_date, item_id, booker_id, status)
-values ('2020-06-22 19:10:25-07', '2021-06-22 19:10:25-07', 1, 2, 0)
+values ('2020-06-22 19:10:25+6', '2021-06-22 19:10:25+6', 1, 2, 2)

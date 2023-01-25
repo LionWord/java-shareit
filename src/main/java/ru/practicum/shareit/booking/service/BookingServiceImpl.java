@@ -51,7 +51,6 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto getBookingInformation(int userId, int bookingId) {
-        Validators.returnBookingIfPresent(bookingId, bookingRepository);
         Booking booking = Validators.returnBookingIfPresent(bookingId, bookingRepository);
         BookingDto returnBooking = BookingMapperDpa.make(booking, itemRepository);
         int bookerId = returnBooking.getBooker().getId();
