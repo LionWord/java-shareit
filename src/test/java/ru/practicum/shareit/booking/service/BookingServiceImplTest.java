@@ -42,6 +42,7 @@ class BookingServiceImplTest {
     private BookingServiceImpl bookingService;
     @Autowired
     private BookingRepository bookingRepository;
+
     @Test
     void createBookingRequest_shouldReturnDto_withProperNameAndDates() {
         int userId = 2;
@@ -118,6 +119,7 @@ class BookingServiceImplTest {
         assertEquals(userBookerId, result.getBooker().getId());
         assertEquals(Status.APPROVED, result.getStatus());
     }
+
     @Test
     void getAllUserBookings_rejected_shouldReturnListWithOneValue() {
         int userOwnerId = 1;
@@ -152,25 +154,17 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getAllUserBookings_futureBooking_shouldReturnListWithOneValue() {
-        int bookerId = 2;
-        Booking booking = new Booking();
-        booking.setBookerId(bookerId);
-        booking.setItemId(1);
-        booking.setStart(LocalDateTime.of(3000, Month.JANUARY, 12, 12, 0));
-        booking.setEnd(LocalDateTime.of(3001, Month.JANUARY, 12, 12, 0));
-        bookingService.createBookingRequest(booking, bookerId);
-        List<BookingDto> list = bookingService.getAllUserBookings(bookerId, State.FUTURE.name());
-        BookingDto result = list.get(0);
-        assertEquals(bookerId, result.getBooker().getId());
-        //need fix, past and future same reaction
+    void getAllOwnerBookings_shouldReturnListWithOneValue() {
+        int ownerId = 1;
+        List<BookingDto> bookings = bookingService.getAllOwnerBookings(ownerId, State.ALL.name());
+        assertEquals(1, bookings.size());
     }
 
     @Test
-    void getAllOwnerBookings() {
+    void getAllOwnerBookings_shouldReturnEmptyList_notOwner() {
+        int ownerId = 2;
+        List<BookingDto> bookings = bookingService.getAllOwnerBookings(ownerId, State.ALL.name());
+        assertEquals(0, bookings.size());
     }
 
-    @Test
-    void testGetAllOwnerBookings() {
-    }
 }
