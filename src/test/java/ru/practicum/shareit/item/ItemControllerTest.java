@@ -1,6 +1,13 @@
 package ru.practicum.shareit.item;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.*;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -20,12 +28,16 @@ import org.springframework.web.context.WebApplicationContext;
 import ru.practicum.shareit.ShareItApp;
 import ru.practicum.shareit.exceptions.ErrorHandler;
 import ru.practicum.shareit.exceptions.NoSuchItemException;
+import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
 import javax.validation.ConstraintViolationException;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,7 +59,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ItemControllerTest {
 
     private final ItemServiceImpl itemService;
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     private MockMvc mvc;
     private Item item;
     private ItemDto itemDto;
@@ -210,17 +222,33 @@ class ItemControllerTest {
 
     @Test
     void searchItem_shouldReturnDrill_queryCaseIsWeird() throws Exception {
-        //not working
         String requestParam = "drill";
-        mvc.perform(get("/search")
+        mvc.perform(get("/items/search")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .param("text", requestParam))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains("drill")));
-
     }
 
     @Test
-    void postComment() {
+    void postComment_saveAndReturnCorrectComment() throws Exception {
+        int userId = 2;
+        int itemId = 1;
+        Comment comment = new Comment();
+        comment.setId(1);
+        comment.setAuthorId(userId);
+        comment.setItemId(1);
+        comment.setText("Wonderful!");
+        mvc.perform(post("/items/" + itemId + "/comment")
+                        .header("X-Sharer-User-Id", userId)
+                        .content(mapper.writeValueAsString(comment))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(1))
+                .andExpect(jsonPath("text").value("Wonderful!"))
+                .andExpect(jsonPath("itemId").value(1))
+                .andExpect(jsonPath("authorId").value(2));
+
     }
 }
