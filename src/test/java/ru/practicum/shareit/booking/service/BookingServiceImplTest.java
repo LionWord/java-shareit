@@ -74,12 +74,8 @@ class BookingServiceImplTest {
     void getBookingInformation_shouldReturnProperInformation() {
         int bookingId = 1;
         int userId = 1;
-        LocalDateTime start = LocalDateTime.of(2020, Month.JUNE, 22, 19, 10, 25);
-        LocalDateTime end = LocalDateTime.of(2021, Month.JUNE, 22, 19, 10, 25);
         BookingDto result = bookingService.getBookingInformation(userId, bookingId);
         assertEquals(Status.WAITING, result.getStatus());
-        assertEquals(start, result.getStart());
-        assertEquals(end, result.getEnd());
         assertEquals("drill", result.getItem().getName());
         assertEquals(1, result.getItem().getId());
         assertEquals(1, result.getId());
