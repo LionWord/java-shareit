@@ -124,8 +124,7 @@ public class ItemServiceImpl implements ItemService {
         if (query.isEmpty()) {
             return List.of();
         }
-        return itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase
-                        (query, query, Pageable.unpaged()).stream()
+        return itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(query, query, Pageable.unpaged()).stream()
                 .filter(Item::getAvailable)
                 .collect(Collectors.toList());
     }
@@ -140,12 +139,10 @@ public class ItemServiceImpl implements ItemService {
             return List.of();
         }
         Validators.checkPagination(from, size);
-        Page<Item> items = itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase
-                (query, query, PageRequest.of(from, size));
+        Page<Item> items = itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(query, query, PageRequest.of(from, size));
         while (items.isEmpty()) {
             from -= 1;
-            items = itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase
-                    (query, query, PageRequest.of(from, size));
+            items = itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(query, query, PageRequest.of(from, size));
         }
         return items.stream()
                 .filter(Item::getAvailable)
