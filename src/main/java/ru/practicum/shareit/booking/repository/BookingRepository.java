@@ -11,7 +11,7 @@ import ru.practicum.shareit.booking.model.Booking;
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     Page<Booking> findAllByBookerIdOrderByStartDesc(int bookerId, Pageable pageable);
 
-    @Query ("select b from Booking b " +
+    @Query("select b from Booking b " +
             "join Item i on i.id=b.itemId " +
             "where i.ownerId=?1 " +
             "order by b.start desc ")

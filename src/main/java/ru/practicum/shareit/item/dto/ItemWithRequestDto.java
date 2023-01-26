@@ -4,9 +4,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
 @Getter
 @Setter
-public class ItemWithRequestDto extends ItemDto{
+public class ItemWithRequestDto extends ItemDto {
     private int id;
 
     @Builder(access = AccessLevel.PUBLIC, builderMethodName = "childBuilder")

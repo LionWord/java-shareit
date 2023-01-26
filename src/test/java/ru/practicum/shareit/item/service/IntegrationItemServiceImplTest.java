@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest (
+@SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         classes = ShareItApp.class
 )

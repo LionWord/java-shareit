@@ -17,11 +17,12 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class RequestServiceImpl implements RequestService{
+public class RequestServiceImpl implements RequestService {
 
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
+
     @Override
     public Request addRequest(int userId, Request request) {
         Validators.userPresenceValidator(userId, userRepository);
@@ -31,6 +32,7 @@ public class RequestServiceImpl implements RequestService{
         request.setRequesterId(userId);
         return requestRepository.save(request);
     }
+
     @Override
     public List<RequestWithResponsesDto> getMyRequests(int userId) {
         Validators.userPresenceValidator(userId, userRepository);
@@ -55,7 +57,7 @@ public class RequestServiceImpl implements RequestService{
         if (from == null & size == null) {
             return List.of();
         }
-        Validators.checkPagination(from,size);
+        Validators.checkPagination(from, size);
         Page<Request> page = requestRepository.findAllOrderByCreated(userId, PageRequest.of(from, size));
         return page.stream()
                 .map(this::connectRequestWithItem)

@@ -85,8 +85,8 @@ class UserControllerTest {
         user.setEmail("wow@uff.com");
         try {
             mvc.perform(post("/users")
-                            .content(mapper.writeValueAsString(user))
-                            .contentType(MediaType.APPLICATION_JSON));
+                    .content(mapper.writeValueAsString(user))
+                    .contentType(MediaType.APPLICATION_JSON));
         } catch (NestedServletException ex) {
             assertEquals(DataIntegrityViolationException.class, ex.getCause().getClass());
         }
@@ -100,7 +100,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException()
-                instanceof ConstraintViolationException));
+                        instanceof ConstraintViolationException));
     }
 
     @Test
@@ -155,7 +155,7 @@ class UserControllerTest {
         String expectedEmail = "drish@nomuscles.com";
         String expectedName = "Sasha";
         mvc.perform(get("/users/2")
-                    .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value(expectedName))
                 .andExpect(jsonPath("email").value(expectedEmail))
@@ -169,7 +169,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException()
-                instanceof NoSuchUserException));
+                        instanceof NoSuchUserException));
     }
 
     @Test
@@ -208,11 +208,11 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException()
-                instanceof NoSuchUserException));
+                        instanceof NoSuchUserException));
     }
 
     @Test
-    void deleteUser_shouldReturnListOfOneUser() throws Exception{
+    void deleteUser_shouldReturnListOfOneUser() throws Exception {
         int expectedUserListLength = 1;
         mvc.perform(delete("/users/1")
                         .content(mapper.writeValueAsString(user))
@@ -222,7 +222,7 @@ class UserControllerTest {
     }
 
     @Test
-    void deleteUser_shouldThrowException_userDoNotExist() throws Exception{
+    void deleteUser_shouldThrowException_userDoNotExist() throws Exception {
         try {
             mvc.perform(delete("/users/99")
                     .content(mapper.writeValueAsString(user))

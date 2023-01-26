@@ -31,6 +31,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
+    @Captor
+    private final ArgumentCaptor<ItemDto> itemDtoCaptor = ArgumentCaptor.forClass(ItemDto.class);
     @Mock
     private ItemRepository itemRepository;
     @Mock
@@ -39,8 +41,6 @@ class ItemServiceImplTest {
     private UserService userService;
     @Mock
     private BookingService bookingService;
-    @Captor
-    private final ArgumentCaptor<ItemDto> itemDtoCaptor = ArgumentCaptor.forClass(ItemDto.class);
     @InjectMocks
     private ItemServiceImpl itemService;
 
@@ -51,8 +51,8 @@ class ItemServiceImplTest {
         Item item = new Item();
         item.setOwnerId(userId);
         ItemDto updateItem = ItemDto.builder()
-                        .description("update")
-                                .build();
+                .description("update")
+                .build();
         InOrder order = inOrder(itemRepository);
         when(itemRepository.findById(itemId)).thenReturn(Optional.of(item));
         itemService.editItem(userId, itemId, updateItem);

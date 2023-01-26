@@ -98,6 +98,7 @@ public class BookingServiceImpl implements BookingService {
                 .forEach(booking -> list.add(BookingMapperDpa.make(booking, itemRepository)));
         return filterBookingsByState(list, State.valueOf(state));
     }
+
     public List<BookingDto> getAllOwnerBookings(int userId, String state, Integer from, Integer size) {
         if (from == null & size == null) {
             return getAllOwnerBookings(userId, state);

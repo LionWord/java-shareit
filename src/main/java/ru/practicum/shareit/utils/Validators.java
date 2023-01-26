@@ -103,7 +103,7 @@ public class Validators {
     }
 
     public static Request returnRequestIfPresent(int requestId, RequestRepository requestRepository) {
-         return requestRepository.findById(requestId)
+        return requestRepository.findById(requestId)
                 .orElseThrow(() -> new NoSuchRequestException(Messages.NO_SUCH_REQUEST));
     }
 

@@ -96,8 +96,8 @@ class ValidatorsTest {
     @Test
     void checkBookingDates_throwException_ifStartIsBeforeNow() {
         Booking booking = new Booking();
-        LocalDateTime start = LocalDateTime.of(2022, Month.JANUARY, 10, 10,0);
-        LocalDateTime end = LocalDateTime.of(2022, Month.JANUARY, 11, 10,0);
+        LocalDateTime start = LocalDateTime.of(2022, Month.JANUARY, 10, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2022, Month.JANUARY, 11, 10, 0);
         booking.setStart(start);
         booking.setEnd(end);
         assertThrows(WrongTimestampException.class, () -> Validators.checkBookingDates(booking));
@@ -106,8 +106,8 @@ class ValidatorsTest {
     @Test
     void checkBookingDates_throwException_ifEndIsBeforeStart() {
         Booking booking = new Booking();
-        LocalDateTime start = LocalDateTime.of(2122, Month.JANUARY, 12, 10,0);
-        LocalDateTime end = LocalDateTime.of(2122, Month.JANUARY, 11, 10,0);
+        LocalDateTime start = LocalDateTime.of(2122, Month.JANUARY, 12, 10, 0);
+        LocalDateTime end = LocalDateTime.of(2122, Month.JANUARY, 11, 10, 0);
         booking.setStart(start);
         booking.setEnd(end);
         assertThrows(WrongTimestampException.class, () -> Validators.checkBookingDates(booking));
@@ -154,7 +154,7 @@ class ValidatorsTest {
         int userId = 0;
         int itemId = 0;
         ItemBookingDto item = new ItemBookingDto(0, "name");
-        LocalDateTime start = LocalDateTime.of(2122, Month.JANUARY, 12, 10,0);
+        LocalDateTime start = LocalDateTime.of(2122, Month.JANUARY, 12, 10, 0);
         BookingDto booking = new BookingDto();
         booking.setItem(item);
         booking.setStart(start);

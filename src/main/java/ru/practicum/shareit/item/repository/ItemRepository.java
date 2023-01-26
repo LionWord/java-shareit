@@ -14,10 +14,12 @@ public interface ItemRepository extends JpaRepository<Item, Integer>, ItemMapper
     Page<Item> findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(@NotNull String description,
                                                                               @NotNull String name,
                                                                               Pageable pageable);
+
     @Query(nativeQuery = true,
             value = "select * from items i " +
-            "left join responses r on r.item_id=i.item_id " +
+                    "left join responses r on r.item_id=i.item_id " +
                     "where r.request_id = ?1")
     List<Item> findAllByRequestId(int requestId);
+
     Page<Item> findAllByOwnerIdOrderByIdAsc(int userId, Pageable pageable);
 }

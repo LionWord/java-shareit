@@ -141,9 +141,9 @@ class ItemControllerTest {
                 .name(newName)
                 .build();
         mvc.perform(patch("/items/" + itemId)
-                .content(mapper.writeValueAsString(newItem))
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("X-Sharer-User-Id", userId))
+                        .content(mapper.writeValueAsString(newItem))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value(newName))
                 .andExpect(jsonPath("id").value(itemId));
@@ -163,7 +163,7 @@ class ItemControllerTest {
                         .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException()
-                            instanceof NoSuchItemException));
+                        instanceof NoSuchItemException));
     }
 
     @Test

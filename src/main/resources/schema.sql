@@ -16,7 +16,7 @@ create table if not exists items
     item_is_available boolean,
     owner_id          integer
         constraint "OWNER"
-            references users on UPDATE cascade on delete cascade ,
+            references users on UPDATE cascade on delete cascade,
     request_id        integer     not null
 );
 
@@ -55,7 +55,7 @@ create table if not exists requests
         primary key,
     request_text    varchar(256),
     request_created timestamp not null,
-    requester_id integer
+    requester_id    integer
 );
 
 create table if not exists responses

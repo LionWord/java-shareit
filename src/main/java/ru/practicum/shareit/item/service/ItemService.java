@@ -18,9 +18,11 @@ public interface ItemService {
     ItemDatesCommentsDto addDatesAndComments(int userId, Item item);
 
     List<Item> getAllMyItems(int userId);
+
     List<Item> getAllMyItems(int userId, Integer from, Integer size);
 
     List<Item> searchItem(String query);
+
     List<Item> searchItem(String query, Integer from, Integer size);
 
     CommentDto postComment(int userId, int itemId, Comment comment);

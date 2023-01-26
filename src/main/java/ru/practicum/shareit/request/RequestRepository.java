@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Integer> {
     List<Request> findAllByRequesterIdOrderByCreatedDesc(int requesterId);
+
     @Query("select r from Request r " +
             "where r.requesterId not in ?1 " +
             "order by r.created desc")

@@ -38,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
@@ -70,8 +71,8 @@ class BookingControllerTest {
                 .build();
         booking = new Booking();
         booking.setItemId(1);
-        booking.setStart(LocalDateTime.of(3000, Month.JANUARY, 12, 0,0, 0));
-        booking.setEnd(LocalDateTime.of(3001, Month.JANUARY, 12, 0,0, 0));
+        booking.setStart(LocalDateTime.of(3000, Month.JANUARY, 12, 0, 0, 0));
+        booking.setEnd(LocalDateTime.of(3001, Month.JANUARY, 12, 0, 0, 0));
     }
 
     @Test
@@ -101,7 +102,7 @@ class BookingControllerTest {
                         .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException()
-                instanceof NoSuchItemException));
+                        instanceof NoSuchItemException));
     }
 
     @Test
@@ -162,7 +163,7 @@ class BookingControllerTest {
                         .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException()
-                instanceof NoSuchItemException));
+                        instanceof NoSuchItemException));
     }
 
     @Test
