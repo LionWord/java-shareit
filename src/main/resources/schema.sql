@@ -16,7 +16,7 @@ create table if not exists items
     item_is_available boolean,
     owner_id          integer
         constraint "OWNER"
-            references users,
+            references users on UPDATE cascade on delete cascade ,
     request_id        integer     not null
 );
 
@@ -28,10 +28,10 @@ create table if not exists bookings
     end_date   timestamp not null,
     item_id    integer   not null
         constraint "ITEM_BOOKING"
-            references items,
+            references items on UPDATE cascade on delete cascade,
     booker_id  integer   not null
         constraint booker
-            references users,
+            references users on UPDATE cascade on delete cascade,
     status     varchar   not null
 );
 
@@ -42,10 +42,10 @@ create table if not exists comments
     comment_text varchar(256) not null,
     item_id      integer      not null
         constraint "ITEM_COMMENTS"
-            references items,
+            references items on UPDATE cascade on delete cascade,
     author_id    integer      not null
         constraint author
-            references users,
+            references users on UPDATE cascade on delete cascade,
     created      timestamp
 );
 
