@@ -1,6 +1,5 @@
 package ru.practicum.shareit.response;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.request.RequestRepository;

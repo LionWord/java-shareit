@@ -1,16 +1,9 @@
 package ru.practicum.shareit.item.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-
-import static org.mockito.Mockito.*;
-
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
@@ -26,15 +19,15 @@ import ru.practicum.shareit.item.dto.ItemDatesCommentsDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.response.ResponseService;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
-import ru.practicum.shareit.utils.Validators;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ItemServiceImplTest {
@@ -46,14 +39,8 @@ class ItemServiceImplTest {
     private UserService userService;
     @Mock
     private BookingService bookingService;
-    @Mock
-    private UserRepository userRepository;
-    @Mock
-    private ResponseService responseService;
     @Captor
-    private ArgumentCaptor<Item> itemCaptor = ArgumentCaptor.forClass(Item.class);
-    @Captor
-    private ArgumentCaptor<ItemDto> itemDtoCaptor = ArgumentCaptor.forClass(ItemDto.class);
+    private final ArgumentCaptor<ItemDto> itemDtoCaptor = ArgumentCaptor.forClass(ItemDto.class);
     @InjectMocks
     private ItemServiceImpl itemService;
 

@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.dto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder(access = AccessLevel.PUBLIC)

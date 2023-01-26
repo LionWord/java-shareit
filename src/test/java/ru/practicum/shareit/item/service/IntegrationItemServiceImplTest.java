@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item.service;
 
 import org.junit.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +12,8 @@ import ru.practicum.shareit.item.comments.Comment;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest (
@@ -41,7 +41,7 @@ public class IntegrationItemServiceImplTest {
     @Test
     public void testSearchItem_returnItem_byQuery_Drill_caseInsensitive() {
         int userId = 1;
-        assertEquals(1, itemService.searchItem("drill").size());
+        assertEquals(userId, itemService.searchItem("drill").size());
     }
 
     @Test

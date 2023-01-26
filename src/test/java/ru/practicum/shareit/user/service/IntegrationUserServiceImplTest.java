@@ -1,7 +1,5 @@
 package ru.practicum.shareit.user.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,9 @@ import ru.practicum.shareit.ShareItApp;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -52,13 +53,10 @@ class IntegrationUserServiceImplTest {
     @Test
     public void modifyUser_shouldChangeName_toAlexey() {
         int userId = 1;
-        User user = userRepository.findById(userId).get();
-        String oldName = user.getName();
         UserDto userDto = UserDto.builder()
                 .name("alexey")
                 .build();
         User modUser = userService.modifyUser(userId, userDto);
-        String newName = modUser.getName();
         assertEquals("alexey", userService.getUser(modUser.getId()).getName());
     }
 

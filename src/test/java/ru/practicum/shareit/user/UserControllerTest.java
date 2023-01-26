@@ -46,15 +46,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringJUnitWebConfig({UserController.class, UserServiceImpl.class, ErrorHandler.class, UserRepository.class})
 class UserControllerTest {
 
-    private final UserServiceImpl userService;
     private final UserRepository userRepository;
     private final ObjectMapper mapper = new ObjectMapper();
     private MockMvc mvc;
     private UserDto user;
 
     @Autowired
-    UserControllerTest(UserServiceImpl userService, UserRepository userRepository) {
-        this.userService = userService;
+    UserControllerTest(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -186,7 +184,6 @@ class UserControllerTest {
                 .andExpect(result -> assertTrue(result.getResponse()
                         .getContentAsString()
                         .contains("drish@nomuscles.com")));
-        ;
 
     }
 

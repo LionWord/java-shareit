@@ -13,16 +13,12 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
-import ru.practicum.shareit.user.service.UserServiceImpl;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -34,10 +30,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Sql({"/drop_schema.sql", "/schema.sql", "/test_data.sql"})
 class BookingServiceImplTest {
 
-    @Autowired
-    private UserServiceImpl userService;
-    @Autowired
-    private ItemServiceImpl itemService;
     @Autowired
     private BookingServiceImpl bookingService;
     @Autowired

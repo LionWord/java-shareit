@@ -1,24 +1,13 @@
 package ru.practicum.shareit.booking;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import org.junit.jupiter.api.Test;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.*;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import org.junit.jupiter.api.Assertions;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.engine.TestExecutionResult;
 import org.junit.runner.RunWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
@@ -35,33 +24,20 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
-import ru.practicum.shareit.exceptions.*;
-import ru.practicum.shareit.item.ItemController;
-import ru.practicum.shareit.item.comments.Comment;
+import ru.practicum.shareit.exceptions.BookingSelfOwnedItemException;
+import ru.practicum.shareit.exceptions.ErrorHandler;
+import ru.practicum.shareit.exceptions.NoSuchItemException;
+import ru.practicum.shareit.exceptions.NoSuchUserException;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.item.service.ItemServiceImpl;
-
-import javax.validation.ConstraintViolationException;
 
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
@@ -80,17 +56,12 @@ import static org.junit.jupiter.api.Assertions.*;
         BookingDto.class})
 class BookingControllerTest {
 
-    private final BookingServiceImpl bookingService;
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
             .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
 
     private MockMvc mvc;
     private Booking booking;
     private int userId;
-    @Autowired
-    public BookingControllerTest(BookingServiceImpl bookingService) {
-        this.bookingService = bookingService;
-    }
 
     @BeforeEach
     void setUp(WebApplicationContext wac) {
@@ -113,8 +84,8 @@ class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("start").value(booking.getStart().format(DateTimeFormatter.ofPattern("YYYY-MM-DD'T'HH:mm:ss"))))
-                .andExpect(jsonPath("end").value(booking.getEnd().format(DateTimeFormatter.ofPattern("YYYY-MM-DD'T'HH:mm:ss"))))
+                .andExpect(jsonPath("start").value(booking.getStart().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))))
+                .andExpect(jsonPath("end").value(booking.getEnd().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))))
                 .andExpect(jsonPath("item").value(item))
                 .andExpect(jsonPath("booker").value(booker))
                 .andExpect(jsonPath("status").value(Status.WAITING.name()));
@@ -233,7 +204,7 @@ class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isOk())
-                .andExpect(result -> result.getResponse().getContentAsString().contains("drill"));
+                .andExpect(result -> assertTrue(result.getResponse().getContentAsString().contains("drill")));
     }
 
 }
