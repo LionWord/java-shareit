@@ -107,7 +107,7 @@ public class BookingServiceImpl implements BookingService {
         Validators.checkPagination(from, size);
         ArrayList<BookingDto> list = new ArrayList<>();
         Page<Booking> page = bookingRepository.findAllOwnerBookings(userId, PageRequest.of(from, size));
-        while (page.isEmpty() & from >= 0) {
+        while (page.isEmpty() && from >= 0) {
             from -= 1;
             page = bookingRepository.findAllOwnerBookings(userId, PageRequest.of(from, size));
         }
