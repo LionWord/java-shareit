@@ -2,6 +2,9 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.request.dto.RequestWithResponsesDto;
+import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.request.service.RequestService;
 
 import java.util.List;
 

@@ -1,8 +1,10 @@
-package ru.practicum.shareit.response;
+package ru.practicum.shareit.response.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.request.RequestRepository;
+import ru.practicum.shareit.request.repository.RequestRepository;
+import ru.practicum.shareit.response.model.Response;
+import ru.practicum.shareit.response.repository.ResponseRepository;
 import ru.practicum.shareit.utils.Validators;
 
 @Service

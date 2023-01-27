@@ -14,8 +14,8 @@ import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.dto.ItemBookingDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.request.Request;
-import ru.practicum.shareit.request.RequestRepository;
+import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;

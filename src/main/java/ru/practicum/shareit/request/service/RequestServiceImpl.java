@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.request.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -7,6 +7,10 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemWithRequestDto;
 import ru.practicum.shareit.item.mapper.ItemRequestDtoMapper;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.dto.RequestWithResponsesDto;
+import ru.practicum.shareit.request.mapper.RequestMapper;
+import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.utils.Validators;
 

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.response;
+package ru.practicum.shareit.response.model;
 
 import lombok.*;
 
