@@ -114,10 +114,20 @@ class BookingServiceImplTest {
         int userBookerId = 2;
         int bookingId = 1;
         bookingService.changeBookingApprovalStatus(userOwnerId, bookingId, false);
-        List<BookingDto> list = bookingService.getAllUserBookings(userBookerId, State.ALL.name());
+        List<BookingDto> list = bookingService.getAllUserBookings(userBookerId, State.REJECTED.name());
         BookingDto result = list.get(0);
         assertEquals(userBookerId, result.getBooker().getId());
         assertEquals(Status.REJECTED, result.getStatus());
+    }
+
+    @Test
+    void getAllUserBookings_current_shouldReturnListWithOneValue() {
+        addNewBooking();
+        int userBookerId = 2;
+        List<BookingDto> list = bookingService.getAllUserBookings(userBookerId, State.CURRENT.name());
+        BookingDto result = list.get(0);
+        assertEquals(userBookerId, result.getBooker().getId());
+        assertEquals(Status.APPROVED, result.getStatus());
     }
 
     @Test
@@ -142,6 +152,18 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void getAllUserBookings_getWithPagination_firstBookingIdShouldBe2_andListLengthShouldBe1() {
+        addNewBooking();
+        int userBookerId = 2;
+        int expectedId = 2;
+        int expectedListLength = 1;
+        List<BookingDto> list = bookingService.getAllUserBookings(userBookerId, State.ALL.name(), 0, 1);
+        BookingDto result = list.get(0);
+        assertEquals(expectedId, result.getId());
+        assertEquals(expectedListLength, list.size());
+    }
+
+    @Test
     void getAllOwnerBookings_shouldReturnListWithOneValue() {
         int ownerId = 1;
         List<BookingDto> bookings = bookingService.getAllOwnerBookings(ownerId, State.ALL.name());
@@ -153,6 +175,29 @@ class BookingServiceImplTest {
         int ownerId = 2;
         List<BookingDto> bookings = bookingService.getAllOwnerBookings(ownerId, State.ALL.name());
         assertEquals(0, bookings.size());
+    }
+
+    @Test
+    void getAllOwnerBookings_getWithPagination_firstBookingIdShouldBe2_andListLengthShouldBe1() {
+        addNewBooking();
+        int ownerId = 1;
+        int expectedId = 2;
+        int expectedListLength = 1;
+        List<BookingDto> bookings = bookingService.getAllOwnerBookings(ownerId, State.ALL.name(), 0, 1);
+        BookingDto result = bookings.get(0);
+        assertEquals(expectedId, result.getId());
+        assertEquals(expectedListLength, bookings.size());
+        assertEquals(1, bookings.size());
+    }
+
+    private void addNewBooking() {
+        Booking currentBooking = new Booking();
+        currentBooking.setItemId(1);
+        currentBooking.setBookerId(2);
+        currentBooking.setStart(LocalDateTime.of(2023, Month.JANUARY, 1, 1, 0, 0));
+        currentBooking.setEnd(LocalDateTime.of(3023, Month.JANUARY, 1, 1, 0, 0));
+        currentBooking.setStatus(Status.APPROVED);
+        bookingRepository.save(currentBooking);
     }
 
 }
