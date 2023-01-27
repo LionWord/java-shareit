@@ -12,13 +12,10 @@ import javax.validation.ConstraintViolationException;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler({InvalidEmailException.class,
-            NotOwnerException.class,
-            NotAvailableException.class,
+    @ExceptionHandler({NotAvailableException.class,
             WrongTimestampException.class,
             IllegalArgumentException.class,
             UnsupportedStatusException.class,
-            InvalidItemInputException.class,
             ConstraintViolationException.class,
             AlreadyApprovedException.class,
             EmptyCommentException.class,
@@ -34,7 +31,6 @@ public class ErrorHandler {
     @ExceptionHandler({NoSuchUserException.class,
             NoSuchItemException.class,
             NoSuchBookingException.class,
-            WrongUserIdException.class,
             BookingSelfOwnedItemException.class,
             NoSuchRequestException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
