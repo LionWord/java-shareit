@@ -58,7 +58,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<RequestWithResponsesDto> getAllRequests(int userId, Integer from, Integer size) {
-        if (from == null & size == null) {
+        if (from == null && size == null) {
             return List.of();
         }
         Validators.checkPagination(from, size);
