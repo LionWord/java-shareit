@@ -15,10 +15,9 @@ public interface ItemRepository extends JpaRepository<Item, Integer>, ItemMapper
                                                                               @NotNull String name,
                                                                               Pageable pageable);
 
-    @Query(nativeQuery = true,
-            value = "select * from items i " +
-                    "left join responses r on r.item_id=i.item_id " +
-                    "where r.request_id = ?1")
+    @Query("select i from Item i " +
+                    "join Response r on r.itemId = i.id " +
+                    "where r.requestId = ?1")
     List<Item> findAllByRequestId(int requestId);
 
     Page<Item> findAllByOwnerIdOrderByIdAsc(int userId, Pageable pageable);
