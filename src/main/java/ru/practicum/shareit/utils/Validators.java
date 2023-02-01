@@ -9,6 +9,8 @@ import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.Request;
+import ru.practicum.shareit.request.repository.RequestRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.sql.Timestamp;
@@ -90,6 +92,26 @@ public class Validators {
         }
         if (bookingDto.getStart().isAfter(Timestamp.from(Instant.now()).toLocalDateTime())) {
             throw new CantCommentException(Messages.ITEM_WAS_NOT_USED);
+        }
+    }
+
+    public static void checkIfRequestIsNotEmpty(Request request) {
+        String description = request.getDescription();
+        if (description == null || description.isEmpty() || description.isBlank()) {
+            throw new EmptyRequestException(Messages.EMPTY_REQUEST);
+        }
+    }
+
+    public static Request returnRequestIfPresent(int requestId, RequestRepository requestRepository) {
+        return requestRepository.findById(requestId)
+                .orElseThrow(() -> new NoSuchRequestException(Messages.NO_SUCH_REQUEST));
+    }
+
+    public static void checkPagination(int from, int size) {
+        if ((from == 0 & size == 0)
+                | from < 0
+                | size < 1) {
+            throw new InvalidPaginationException(Messages.INVALID_PAGINATION);
         }
     }
 

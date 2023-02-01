@@ -1,6 +1,9 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.State;
@@ -15,6 +18,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemDatesCommentsMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.response.service.ResponseService;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.utils.Messages;
@@ -35,13 +39,18 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final BookingService bookingService;
     private final UserRepository userRepository;
+    private final ResponseService responseService;
 
     @Override
     public Item saveItem(int userId, ItemDto item) {
         Validators.userPresenceValidator(userId, userRepository);
         Item itemEntity = itemRepository.itemFromDto(item);
         itemEntity.setOwnerId(userId);
-        return itemRepository.save(itemEntity);
+        itemEntity = itemRepository.save(itemEntity);
+        if (item.getRequestId() != null) {
+            responseService.addResponse(item.getRequestId(), itemEntity.getId());
+        }
+        return itemEntity;
     }
 
     @Override
@@ -58,11 +67,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item addDatesAndComments(int userId, Item item) {
+    public ItemDatesCommentsDto addDatesAndComments(int userId, Item item) {
         int ownerId = item.getOwnerId();
         List<BookingDto> bookingDtoListOwner = bookingService.getAllOwnerBookings(ownerId, State.ALL.name());
         ItemDatesCommentsDto itemDto = ItemDatesCommentsMapper.mapFromItem(item, bookingDtoListOwner);
-
         List<CommentDto> comments = commentRepository.findAll().stream()
                 .filter(comment -> comment.getItemId() == item.getId())
                 .map(comment -> CommentDto.mapToDto(comment, userService))
@@ -95,18 +103,55 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public List<Item> getAllMyItems(int userId, Integer from, Integer size) {
+        if (from == null & size == null) {
+            return getAllMyItems(userId);
+        }
+        Validators.checkPagination(from, size);
+        Page<Item> items = itemRepository.findAllByOwnerIdOrderByIdAsc(userId, PageRequest.of(from, size));
+        while (items.isEmpty()) {
+            from -= 1;
+            items = itemRepository.findAllByOwnerIdOrderByIdAsc(userId, PageRequest.of(from, size));
+        }
+        List<BookingDto> bookingDtoOwnerList = bookingService.getAllOwnerBookings(userId, State.ALL.name());
+        return items.stream()
+                .map(item -> ItemDatesCommentsMapper.mapFromItem(item, bookingDtoOwnerList))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<Item> searchItem(String query) {
         if (query.isEmpty()) {
             return List.of();
         }
-        return itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(query, query).stream()
+        return itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(query, query, Pageable.unpaged()).stream()
+                .filter(Item::getAvailable)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<Item> searchItem(String query, Integer from, Integer size) {
+        if (from == null & size == null) {
+            return searchItem(query);
+        }
+        if (query.isEmpty()) {
+            return List.of();
+        }
+        Validators.checkPagination(from, size);
+        Page<Item> items = itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(query, query, PageRequest.of(from, size));
+        while (items.isEmpty()) {
+            from -= 1;
+            items = itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(query, query, PageRequest.of(from, size));
+        }
+        return items.stream()
                 .filter(Item::getAvailable)
                 .collect(Collectors.toList());
     }
 
     @Override
     public CommentDto postComment(int userId, int itemId, Comment comment) {
-        if (comment.getText().isEmpty()) {
+        if (comment.getText() == null || comment.getText().isEmpty()) {
             throw new EmptyCommentException(Messages.EMPTY_COMMENT);
         }
         Validators.checkIfCanPostComments(userId, itemId, bookingService);

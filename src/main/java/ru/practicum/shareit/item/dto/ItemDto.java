@@ -1,10 +1,10 @@
 package ru.practicum.shareit.item.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder(access = AccessLevel.PUBLIC)
 public class ItemDto {
 
@@ -14,4 +14,5 @@ public class ItemDto {
 
     private Boolean available;
 
+    private Integer requestId;
 }
