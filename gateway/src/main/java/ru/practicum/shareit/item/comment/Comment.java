@@ -13,15 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class Comment {
-
-    private int id;
     @NotBlank
     private String text;
-    @NotNull @Min(1)
-    private int itemId;
-    @NotNull @Min(1)
-    private int authorId;
-
-    private LocalDateTime created;
 
 }
