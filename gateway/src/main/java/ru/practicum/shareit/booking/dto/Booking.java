@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.validation.constraints.Future;
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
 @Data
 public class Booking {
 
-    private int id;
     @FutureOrPresent
     private LocalDateTime start;
     @Future
@@ -19,10 +19,5 @@ public class Booking {
     @NotNull
     @Positive
     private int itemId;
-    @NotNull
-    @Positive
-    private int bookerId;
-
-    private Status status = Status.WAITING;
 
 }

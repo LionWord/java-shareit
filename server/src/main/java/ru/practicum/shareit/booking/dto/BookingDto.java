@@ -13,9 +13,8 @@ public class BookingDto {
 
     private int id;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-DD'T'HH:mm:ss")
     private LocalDateTime start;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-DD'T'HH:mm:ss")
+
     private LocalDateTime end;
 
     private Booker booker;
