@@ -9,13 +9,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class Request {
-
-    private Integer id;
-
+    @NotBlank
     private String description;
-
-    private LocalDateTime created;
-
-    private int requesterId;
 
 }
