@@ -29,7 +29,7 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> addItem(int userId, ItemDto item) {
-        return post("", item);
+        return post("", userId, item);
     }
 
     public ResponseEntity<Object> editItem(int userId, int itemId, ItemDto item) {
@@ -41,20 +41,28 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getAllMyItems(int userId, Integer from, Integer size) {
-        Map<String, Object> params = Map.of(
+        Map<String, Object> params;
+        if (from == null | size == null) {
+            return get("", userId);
+        }
+        params = Map.of(
                 "from", from,
                 "size", size
         );
         return get("?from={from}&size={size}", (long) userId, params);
     }
 
-    public ResponseEntity<Object> searchItem(String query, int userId, Integer from, Integer size) {
-        Map<String, Object> params = Map.of(
+    public ResponseEntity<Object> searchItem(int userId, String query, Integer from, Integer size) {
+        Map<String, Object> params;
+        if (from == null | size == null) {
+            return get("/search?text={query}", (long) userId, Map.of("query", query));
+        }
+        params = Map.of(
                 "query", query,
                 "from", from,
                 "size", size
         );
-        return get("?text={query}&from={from}&size={size}", (long) userId, params);
+        return get("/search?text={query}&from={from}&size={size}", (long) userId, params);
     }
 
     public ResponseEntity<Object> postComment(int userId, int itemId, Comment comment) {
