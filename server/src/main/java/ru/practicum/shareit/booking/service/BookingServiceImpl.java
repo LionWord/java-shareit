@@ -60,7 +60,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getAllUserBookings(int userId, String state) {
         Validators.userPresenceValidator(userId, userRepository);
-        Validators.checkStateValue(state);
         ArrayList<BookingDto> list = new ArrayList<>();
         bookingRepository.findAll().stream()
                 .filter(booking -> booking.getBookerId() == userId)
@@ -75,7 +74,6 @@ public class BookingServiceImpl implements BookingService {
         if (from == null & size == null) {
             return getAllUserBookings(userId, state);
         }
-        Validators.checkPagination(from, size);
         ArrayList<BookingDto> list = new ArrayList<>();
         Page<Booking> page = bookingRepository.findAllByBookerIdOrderByStartDesc(userId, PageRequest.of(from, size));
         while (page.isEmpty()) {
@@ -90,7 +88,6 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getAllOwnerBookings(int userId, String state) {
         Validators.userPresenceValidator(userId, userRepository);
-        Validators.checkStateValue(state);
         ArrayList<BookingDto> list = new ArrayList<>();
         bookingRepository.findAll().stream()
                 .filter(booking -> itemRepository.findById(booking.getItemId()).get().getOwnerId() == userId)
@@ -104,7 +101,6 @@ public class BookingServiceImpl implements BookingService {
         if (from == null & size == null) {
             return getAllOwnerBookings(userId, state);
         }
-        Validators.checkPagination(from, size);
         ArrayList<BookingDto> list = new ArrayList<>();
         Page<Booking> page = bookingRepository.findAllOwnerBookings(userId, PageRequest.of(from, size));
         while (page.isEmpty() && from >= 0) {

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.booking.dto.Booking;
 import ru.practicum.shareit.booking.dto.State;
+import ru.practicum.shareit.booking.exceptions.Messages;
+import ru.practicum.shareit.booking.exceptions.UnsupportedStatusException;
 import ru.practicum.shareit.client.BaseClient;
 
 import java.util.Map;
@@ -41,6 +43,7 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getAllUserBookings(int userId, String state, Integer from, Integer size) {
+        checkStateValue(state);
         Map<String, Object> params;
         if (from == null | size == null) {
             return get("?state={state}", (long) userId, Map.of("state", state));
@@ -54,6 +57,7 @@ public class BookingClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getAllOwnerBookings(int userId, String state, Integer from, Integer size) {
+        checkStateValue(state);
         Map<String, Object> params;
         if (from == null | size == null) {
             return get("/owner?state={state}", (long) userId, Map.of("state", state));
@@ -66,6 +70,13 @@ public class BookingClient extends BaseClient {
         return get("/owner?state={state}&from={from}&size={size}", (long) userId, params);
     }
 
+    private void checkStateValue(String state) {
+        try {
+            State.valueOf(state);
+        } catch (IllegalArgumentException e) {
+            throw new UnsupportedStatusException(Messages.UNKNOWN_STATE + state);
+        }
+    }
 
 
 

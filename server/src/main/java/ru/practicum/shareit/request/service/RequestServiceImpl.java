@@ -30,7 +30,6 @@ public class RequestServiceImpl implements RequestService {
     @Override
     public Request addRequest(int userId, Request request) {
         Validators.userPresenceValidator(userId, userRepository);
-        Validators.checkIfRequestIsNotEmpty(request);
         LocalDateTime now = LocalDateTime.now();
         request.setCreated(now);
         request.setRequesterId(userId);
@@ -61,7 +60,6 @@ public class RequestServiceImpl implements RequestService {
         if (from == null && size == null) {
             return List.of();
         }
-        Validators.checkPagination(from, size);
         Page<Request> page = requestRepository.findAllOrderByCreated(userId, PageRequest.of(from, size));
         return page.stream()
                 .map(this::connectRequestWithItem)

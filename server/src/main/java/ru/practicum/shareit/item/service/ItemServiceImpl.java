@@ -107,7 +107,6 @@ public class ItemServiceImpl implements ItemService {
         if (from == null & size == null) {
             return getAllMyItems(userId);
         }
-        Validators.checkPagination(from, size);
         Page<Item> items = itemRepository.findAllByOwnerIdOrderByIdAsc(userId, PageRequest.of(from, size));
         while (items.isEmpty()) {
             from -= 1;
@@ -138,7 +137,6 @@ public class ItemServiceImpl implements ItemService {
         if (query.isEmpty()) {
             return List.of();
         }
-        Validators.checkPagination(from, size);
         Page<Item> items = itemRepository.findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(query, query, PageRequest.of(from, size));
         while (items.isEmpty()) {
             from -= 1;
