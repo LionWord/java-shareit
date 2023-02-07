@@ -3,7 +3,11 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,12 +35,13 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
+    @CachePut(value = "bookings")
     public ResponseEntity<Object> approveBookingRequest(@RequestHeader("X-Sharer-User-Id") @NotNull @Positive int ownerId,
                                             @PathVariable @NotNull @Positive int bookingId,
                                             @RequestParam(name = "approved") @NotNull boolean approved) {
         return bookingClient.changeBookingApprovalStatus(ownerId, bookingId, approved);
     }
-
+    @Cacheable(value = "bookings")
     @GetMapping("/{bookingId}")
     public ResponseEntity<Object> getBookingInformation(@RequestHeader("X-Sharer-User-Id") @NotNull @Positive int userId,
                                             @PathVariable @NotNull @Positive int bookingId) {
@@ -59,5 +64,9 @@ public class BookingController {
                                                 @RequestParam(name = "size", required = false) @Positive Integer size) {
         return bookingClient.getAllOwnerBookings(userId, state, from, size);
     }
+
+    @CacheEvict(value = "bookings", allEntries = true)
+    @Scheduled(initialDelayString = "${cache.ttl}", fixedDelayString = "${cache.ttl}")
+    public void evictAllCache(){}
 
 }

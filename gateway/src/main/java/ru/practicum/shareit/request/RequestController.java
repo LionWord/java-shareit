@@ -1,7 +1,10 @@
 package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +35,7 @@ public class RequestController {
     }
 
     @GetMapping(path = "{requestId}")
+    @Cacheable(value = "requests")
     public ResponseEntity<Object> getRequest(@RequestHeader("X-Sharer-User-Id") @NotNull @Positive int userId,
                                              @PathVariable @NotNull @Positive int requestId) {
         return requestClient.getRequest(userId, requestId);
@@ -44,5 +48,8 @@ public class RequestController {
         return requestClient.getAllRequests(userId, from, size);
     }
 
+    @CacheEvict(value = "requests", allEntries = true)
+    @Scheduled(initialDelayString = "${cache.ttl}", fixedDelayString = "${cache.ttl}")
+    public void evictAllCache(){}
 
 }

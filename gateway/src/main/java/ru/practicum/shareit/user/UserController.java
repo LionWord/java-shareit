@@ -1,7 +1,11 @@
 package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +15,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping(path = "/users")
@@ -26,6 +31,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
+    @Cacheable(value = "users")
     public ResponseEntity<Object> getUser(@PathVariable @NotNull @Positive int userId) {
         return userClient.getUser(userId);
     }
@@ -36,12 +42,19 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
+    @CachePut(value = "users")
     public ResponseEntity<Object> editUser(@PathVariable @NotNull @Positive int userId, @RequestBody UserDto user) {
         return userClient.editUser(userId, user);
     }
 
     @DeleteMapping("/{userId}")
+    @CacheEvict(value = "users")
     public ResponseEntity<Object> deleteUser(@PathVariable @NotNull @Positive int userId) {
         return userClient.deleteUser(userId);
     }
+
+    @CacheEvict(value = "users", allEntries = true)
+    @Scheduled(initialDelayString = "${cache.ttl}", fixedDelayString = "${cache.ttl}")
+    public void evictAllCache(){}
+    
 }
