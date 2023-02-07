@@ -27,6 +27,8 @@ import ru.practicum.shareit.request.service.RequestServiceImpl;
 import ru.practicum.shareit.response.model.Response;
 import ru.practicum.shareit.response.service.ResponseServiceImpl;
 
+import javax.validation.ConstraintViolationException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -107,7 +109,7 @@ class RequestControllerTest {
                         .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof EmptyRequestException));
+                        instanceof ConstraintViolationException));
     }
 
     @Test
