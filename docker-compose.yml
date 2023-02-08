@@ -1,24 +1,28 @@
-version: '20.10.23'
+version: '3.8'
 services:
   gateway:
-    build: gateway
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
     image: amazoncorretto:11
-    container_name: "gateway"
     ports:
       - "8080:8080"
     depends_on:
-      - server
+      server:
+         condition: service_started
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
 
   server:
-    build: server
+    build:
+      context: .
+      dockerfile: server/Dockerfile
     image: amazoncorretto:11
-    container_name: "server"
     ports:
       - "9090:9090"
     depends_on:
-      - db
+      db:
+        condition: service_started
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
 
