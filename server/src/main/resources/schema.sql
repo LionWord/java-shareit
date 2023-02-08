@@ -26,13 +26,13 @@ create table if not exists bookings
         primary key,
     start_date timestamp without time zone,
     end_date   timestamp without time zone,
-    item_id    integer   not null
+    item_id    integer not null
         constraint "ITEM_BOOKING"
             references items on UPDATE cascade on delete cascade,
-    booker_id  integer   not null
+    booker_id  integer not null
         constraint booker
             references users on UPDATE cascade on delete cascade,
-    status     varchar   not null
+    status     varchar not null
 );
 
 create table if not exists comments

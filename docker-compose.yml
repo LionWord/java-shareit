@@ -9,7 +9,7 @@ services:
       - "8080:8080"
     depends_on:
       server:
-         condition: service_started
+        condition: service_started
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
 
@@ -32,6 +32,6 @@ services:
     ports:
       - "6541:5432"
     environment:
-        - POSTGRES_DB=shareit
-        - POSTGRES_USER=VanDarkholme
-        - POSTGRES_PASSWORD=300bucks
+      - POSTGRES_DB=shareit
+      - POSTGRES_USER=VanDarkholme
+      - POSTGRES_PASSWORD=300bucks

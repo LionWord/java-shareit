@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping(path = "/users")
@@ -55,6 +53,7 @@ public class UserController {
 
     @CacheEvict(value = "users", allEntries = true)
     @Scheduled(initialDelayString = "${cache.ttl}", fixedDelayString = "${cache.ttl}")
-    public void evictAllCache(){}
-    
+    public void evictAllCache() {
+    }
+
 }

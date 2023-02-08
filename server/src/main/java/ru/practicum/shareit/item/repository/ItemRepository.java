@@ -5,21 +5,20 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.item.mapper.ItemMapperDpa;
 import ru.practicum.shareit.item.model.Item;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer>, ItemMapperDpa {
     Page<Item> findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(@NotNull String description,
                                                                               @NotNull String name, Pageable pageable);
 
     @Query("select i from Item i " +
-                    "join Response r on r.itemId = i.id " +
-                    "where r.requestId = ?1")
+            "join Response r on r.itemId = i.id " +
+            "where r.requestId = ?1")
     List<Item> findAllByRequestId(int requestId);
 
     Page<Item> findAllByOwnerIdOrderByIdAsc(int userId, Pageable pageable);

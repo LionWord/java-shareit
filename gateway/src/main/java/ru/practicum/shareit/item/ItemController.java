@@ -1,17 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +9,9 @@ import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Controller
 @RequestMapping(path = "/items")
@@ -32,14 +23,14 @@ public class ItemController {
 
     @PostMapping
     public ResponseEntity<Object> addItem(@RequestHeader("X-Sharer-User-Id") @NotNull @Positive int userId,
-                                  @RequestBody @Valid ItemDto item) {
+                                          @RequestBody @Valid ItemDto item) {
         return itemClient.addItem(userId, item);
     }
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> editItem(@RequestHeader("X-Sharer-User-Id") @NotNull @Positive int userId,
-                         @PathVariable @Positive int itemId,
-                         @RequestBody ItemDto item) {
+                                           @PathVariable @Positive int itemId,
+                                           @RequestBody ItemDto item) {
         return itemClient.editItem(userId, itemId, item);
     }
 
@@ -51,8 +42,8 @@ public class ItemController {
 
     @GetMapping
     public ResponseEntity<Object> getAllMyItems(@RequestHeader("X-Sharer-User-Id") @NotNull @Positive int userId,
-                                    @RequestParam(name = "from", required = false) @PositiveOrZero Integer from,
-                                    @RequestParam(name = "size", required = false) @Positive Integer size) {
+                                                @RequestParam(name = "from", required = false) @PositiveOrZero Integer from,
+                                                @RequestParam(name = "size", required = false) @Positive Integer size) {
         return itemClient.getAllMyItems(userId, from, size);
     }
 
@@ -66,8 +57,8 @@ public class ItemController {
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> postComment(@RequestHeader("X-Sharer-User-Id") @NotNull @Positive int userId,
-                                  @PathVariable @Positive int itemId,
-                                  @RequestBody @Valid Comment comment) {
+                                              @PathVariable @Positive int itemId,
+                                              @RequestBody @Valid Comment comment) {
         return itemClient.postComment(userId, itemId, comment);
     }
 

@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.List;
+
 @Controller
 @RequestMapping(path = "/requests")
 @RequiredArgsConstructor
@@ -43,13 +43,14 @@ public class RequestController {
 
     @GetMapping(path = "/all")
     public ResponseEntity<Object> getAllRequests(@RequestHeader("X-Sharer-User-Id") @NotNull @Positive int userId,
-                                                        @RequestParam(name = "from", required = false) @PositiveOrZero Integer from,
-                                                        @RequestParam(name = "size", required = false) @Positive Integer size) {
+                                                 @RequestParam(name = "from", required = false) @PositiveOrZero Integer from,
+                                                 @RequestParam(name = "size", required = false) @Positive Integer size) {
         return requestClient.getAllRequests(userId, from, size);
     }
 
     @CacheEvict(value = "requests", allEntries = true)
     @Scheduled(initialDelayString = "${cache.ttl}", fixedDelayString = "${cache.ttl}")
-    public void evictAllCache(){}
+    public void evictAllCache() {
+    }
 
 }

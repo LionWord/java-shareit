@@ -35,7 +35,7 @@ public class BookingClient extends BaseClient {
 
     public ResponseEntity<Object> changeBookingApprovalStatus(int ownerId, int bookingId, boolean approved) {
         Map<String, Object> params = Map.of("approved", approved);
-        return patch("/" + bookingId + "?approved={approved}", (long)ownerId, params, new Booking());
+        return patch("/" + bookingId + "?approved={approved}", (long) ownerId, params, new Booking());
     }
 
     public ResponseEntity<Object> getBookingInformation(int userId, int bookingId) {
@@ -77,7 +77,6 @@ public class BookingClient extends BaseClient {
             throw new UnsupportedStatusException(Messages.UNKNOWN_STATE + state);
         }
     }
-
 
 
 }
