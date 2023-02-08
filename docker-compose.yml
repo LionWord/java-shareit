@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: gateway/Dockerfile
-    image: amazoncorretto:11
     ports:
       - "8080:8080"
     depends_on:
@@ -17,7 +16,6 @@ services:
     build:
       context: .
       dockerfile: server/Dockerfile
-    image: amazoncorretto:11
     ports:
       - "9090:9090"
     depends_on:
@@ -25,6 +23,8 @@ services:
         condition: service_started
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
+      - POSTGRES_USER=VanDarkholme
+      - POSTGRES_PASSWORD=300bucks
 
   db:
     image: postgres:13.7-alpine
