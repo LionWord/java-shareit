@@ -1,20 +1,21 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Data
-@Builder(access = AccessLevel.PUBLIC)
 public class UserDto {
     @NotEmpty
     @NotBlank
+    @Length(max = 64)
     private String name;
     @Email
+    @Length(max = 64)
+    @NotBlank
     private String email;
 
 }

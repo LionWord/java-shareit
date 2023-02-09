@@ -26,8 +26,6 @@ import ru.practicum.shareit.request.service.RequestServiceImpl;
 import ru.practicum.shareit.response.model.Response;
 import ru.practicum.shareit.response.service.ResponseServiceImpl;
 
-import javax.validation.ConstraintViolationException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -96,19 +94,6 @@ class RequestControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException()
                         instanceof NoSuchUserException));
-    }
-
-    @Test
-    void addRequest_shouldThrowException_emptyDescription() throws Exception {
-        userId = 1;
-        request.setDescription(null);
-        mvc.perform(post("/requests")
-                        .content(mapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", userId))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof ConstraintViolationException));
     }
 
     @Test

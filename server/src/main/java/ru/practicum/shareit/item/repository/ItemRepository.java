@@ -8,13 +8,12 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.mapper.ItemMapperDpa;
 import ru.practicum.shareit.item.model.Item;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer>, ItemMapperDpa {
-    Page<Item> findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(@NotNull String description,
-                                                                              @NotNull String name, Pageable pageable);
+    Page<Item> findAllByDescriptionContainsIgnoreCaseOrNameContainsIgnoreCase(String description,
+                                                                              String name, Pageable pageable);
 
     @Query("select i from Item i " +
             "join Response r on r.itemId = i.id " +

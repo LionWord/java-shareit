@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.validation.ConstraintViolationException;
-
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
@@ -16,7 +14,6 @@ public class ErrorHandler {
             WrongTimestampException.class,
             IllegalArgumentException.class,
             UnsupportedStatusException.class,
-            ConstraintViolationException.class,
             AlreadyApprovedException.class,
             EmptyCommentException.class,
             CantCommentException.class,

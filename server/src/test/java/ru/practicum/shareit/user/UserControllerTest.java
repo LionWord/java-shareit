@@ -26,8 +26,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 
-import javax.validation.ConstraintViolationException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -90,63 +88,6 @@ class UserControllerTest {
         } catch (NestedServletException ex) {
             assertEquals(DataIntegrityViolationException.class, ex.getCause().getClass());
         }
-    }
-
-    @Test
-    void createUser_shouldThrowException_blankName() throws Exception {
-        user.setName("");
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof ConstraintViolationException));
-    }
-
-    @Test
-    void createUser_shouldThrowException_blankEmail() throws Exception {
-        user.setEmail("");
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof ConstraintViolationException));
-    }
-
-    @Test
-    void createUser_shouldThrowException_invalidEmailFormat() throws Exception {
-        user.setEmail("yeehaw");
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof ConstraintViolationException));
-    }
-
-    @Test
-    void createUser_shouldThrowException_tooLongEmail() throws Exception {
-        user.setEmail("yeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeehaw@" +
-                "yahooooooooooooooooooooooooooooooooooooooooooooooooooooooooo.com");
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof ConstraintViolationException));
-    }
-
-    @Test
-    void createUser_shouldThrowException_tooLongName() throws Exception {
-        user.setName("yeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeehaw" +
-                "yahooooooooooooooooooooooooooooooooooooooooooooooooooooooooocom");
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof ConstraintViolationException));
     }
 
     @Test

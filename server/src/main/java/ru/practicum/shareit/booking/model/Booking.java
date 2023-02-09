@@ -4,7 +4,6 @@ import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,23 +16,18 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull
     @Column(name = "start_date")
     private LocalDateTime start;
 
-    @NotNull
     @Column(name = "end_date")
     private LocalDateTime end;
 
-    @NotNull
     @Column(name = "item_id")
     private int itemId;
 
-    @NotNull
     @Column(name = "booker_id")
     private int bookerId;
 
-    @NotNull
     @Enumerated
     @Column(name = "status")
     private Status status = Status.WAITING;

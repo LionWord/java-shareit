@@ -3,8 +3,6 @@ package ru.practicum.shareit.request.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Data
@@ -17,8 +15,6 @@ public class Request {
     private Integer id;
 
     @Column(name = "request_text")
-    @NotBlank
-    @NotEmpty
     private String description;
 
     @Column(name = "request_created")

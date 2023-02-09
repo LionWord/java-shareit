@@ -24,8 +24,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
-import javax.validation.ConstraintViolationException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -91,45 +89,6 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-Sharer-User-Id", userId))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void addItem_badRequest_noName() throws Exception {
-        userId = 1;
-        itemDto.setName("");
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", userId))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof ConstraintViolationException));
-    }
-
-    @Test
-    void addItem_badRequest_noDescription() throws Exception {
-        userId = 1;
-        itemDto.setDescription("");
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", userId))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof ConstraintViolationException));
-    }
-
-    @Test
-    void addItem_badRequest_availableNotPassed() throws Exception {
-        userId = 1;
-        itemDto.setAvailable(null);
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(itemDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", userId))
-                .andExpect(status().isBadRequest())
-                .andExpect(result -> assertTrue(result.getResolvedException()
-                        instanceof ConstraintViolationException));
     }
 
     @Test
